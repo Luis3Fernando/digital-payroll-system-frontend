@@ -1,13 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgIcon } from '@ng-icons/core';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-login-page',
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NgIcon],
   templateUrl: './login-page.html',
 })
 export class LoginPage {
+  private router = inject(Router);
+
   dni: string = '';
   password: string = '';
 
@@ -16,8 +20,7 @@ export class LoginPage {
       alert('Por favor, ingrese DNI y contraseña.');
       return;
     }
-    console.log('DNI:', this.dni);
-    console.log('Contraseña:', this.password);
-    alert(`Intentando iniciar sesión con DNI: ${this.dni}`);
+
+    this.router.navigate(['/payroll']);
   }
 }
