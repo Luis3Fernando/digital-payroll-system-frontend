@@ -5,7 +5,7 @@ import {
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
-import { routes } from './app.routes';
+import { appRoutes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideIcons } from '@ng-icons/core';
 import {
@@ -23,13 +23,16 @@ import {
   heroMagnifyingGlass,
   heroMagnifyingGlassCircle,
   heroUser,
+  heroUsers,
 } from '@ng-icons/heroicons/outline';
+import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
+    provideRouter(appRoutes),
+    provideHttpClient(),
     provideClientHydration(withEventReplay()),
     provideIcons({
       heroIdentification,
@@ -46,6 +49,7 @@ export const appConfig: ApplicationConfig = {
       heroArrowPath,
       heroArrowDownTray,
       heroDocumentArrowDown,
+      heroUsers,
     }),
   ],
 };
