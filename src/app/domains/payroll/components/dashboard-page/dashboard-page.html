@@ -1,1 +1,50 @@
-<p>dashboard-page works!</p>
+<div class="p-8">
+  <div class="mb-8">
+    <h2 class="text-2xl font-semibold text-gray-800">
+      Bienvenido, <span class="text-blue-600">Luis Fernando</span>
+    </h2>
+    <p class="text-gray-500 mt-1">
+      Accede rápidamente a tus boletas y revisa tu último acceso al sistema.
+    </p>
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div
+      routerLink="/payroll/boletas"
+      class="bg-blue-700 p-6 rounded-xl shadow-blue-200 shadow-sm hover:shadow-md transition-all duration-200 hover:cursor-pointer hover:border-blue-500"
+    >
+      <div class="flex items-center justify-between mb-3 text-gray-200">
+        <h3 class="text-sm font-medium">Acceso directo</h3>
+        <ng-icon name="heroDocumentDuplicate" size="20"></ng-icon>
+      </div>
+      <p class="text-2xl font-semibold text-white">Ver Boletas</p>
+      <p class="text-xs text-gray-300 mt-1">Consulta tus últimas boletas emitidas</p>
+    </div>
+    <div
+      class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200"
+    >
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-sm font-medium text-gray-500">Último acceso</h3>
+        <ng-icon name="heroClock" class="text-yellow-500 w-5 h-5"></ng-icon>
+      </div>
+      <p class="text-2xl font-semibold text-gray-800">21 Oct 2025</p>
+      <p class="text-xs text-gray-400 mt-1">Hace 5 minutos</p>
+    </div>
+  </div>
+  <div class="mt-10 bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4">Tu información personal</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600">
+      <div>
+        <p class="text-sm font-medium text-gray-500">Nombre completo</p>
+        <p class="font-semibold text-gray-800">Luis Fernando Chumbes Ramos</p>
+      </div>
+      <div>
+        <p class="text-sm font-medium text-gray-500">Correo</p>
+        <p class="font-semibold text-gray-800">luis.fernando@example.com</p>
+      </div>
+      <div>
+        <p class="text-sm font-medium text-gray-500">Área</p>
+        <p class="font-semibold text-gray-800">Sistemas</p>
+      </div>
+    </div>
+  </div>
+</div>
