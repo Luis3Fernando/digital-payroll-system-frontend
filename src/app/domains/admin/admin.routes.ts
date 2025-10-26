@@ -16,7 +16,6 @@ export const adminRoutes: Routes = [
       { path: 'dashboard', component: AdminDashboardPage },
       { path: 'usuarios', component: UserManagementPage },
       { path: 'boletas', component: BoletaManagementPage },
-      { path: 'auditoria', component: AuditPage },
     ],
   },
 ];

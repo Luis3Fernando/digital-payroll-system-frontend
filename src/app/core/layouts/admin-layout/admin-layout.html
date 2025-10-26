@@ -6,7 +6,6 @@
       </div>
       <span class="text-lg font-semibold text-white">Panel Administrativo</span>
     </div>
-
     <div class="p-5 flex-1 mt-10">
       <p class="text-gray-500 tracking-wide mb-3 font-light">Gestión</p>
       <nav>
@@ -22,7 +21,6 @@
               <span>Principal</span>
             </a>
           </li>
-
           <li>
             <a
               routerLink="/admin/usuarios"
@@ -33,7 +31,6 @@
               <span>Usuarios</span>
             </a>
           </li>
-
           <li>
             <a
               routerLink="/admin/boletas"
@@ -42,17 +39,6 @@
             >
               <ng-icon name="heroDocumentDuplicate" class="w-5 h-5"></ng-icon>
               <span>Boletas</span>
-            </a>
-          </li>
-
-          <li>
-            <a
-              routerLink="/admin/auditoria"
-              routerLinkActive="bg-blue-600 text-white"
-              class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-600 hover:cursor-pointer hover:text-white transition-colors duration-200"
-            >
-              <ng-icon name="heroMagnifyingGlassCircle" class="w-5 h-5"></ng-icon>
-              <span>Auditoría</span>
             </a>
           </li>
         </ul>
@@ -80,7 +66,6 @@
         </svg>
       </button>
       <h1 class="text-lg font-semibold text-gray-700">Panel Administrativo</h1>
-
       <div class="flex items-center space-x-5">
         <div class="flex items-center gap-2 text-gray-700">
           <ng-icon name="heroUserCircle" class="w-5 h-5 text-gray-600"></ng-icon>
@@ -95,7 +80,6 @@
         </button>
       </div>
     </header>
-
     <main class="flex-1 p-6 overflow-y-auto bg-gray-50">
       <router-outlet></router-outlet>
     </main>
