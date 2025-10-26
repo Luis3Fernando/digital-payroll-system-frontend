@@ -12,6 +12,7 @@ import {
   heroArrowDownTray,
   heroArrowPath,
   heroArrowRightOnRectangle,
+  heroCheckCircle,
   heroClock,
   heroDocumentArrowDown,
   heroDocumentDuplicate,
@@ -22,7 +23,9 @@ import {
   heroLockClosed,
   heroMagnifyingGlass,
   heroMagnifyingGlassCircle,
+  heroTrash,
   heroUser,
+  heroUserPlus,
   heroUsers,
 } from '@ng-icons/heroicons/outline';
 import { provideHttpClient } from '@angular/common/http';
@@ -50,6 +53,9 @@ export const appConfig: ApplicationConfig = {
       heroArrowDownTray,
       heroDocumentArrowDown,
       heroUsers,
+      heroCheckCircle,
+      heroTrash,
+      heroUserPlus,
     }),
   ],
 };
