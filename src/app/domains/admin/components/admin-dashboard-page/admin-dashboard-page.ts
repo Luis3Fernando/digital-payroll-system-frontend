@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
+import { NgIcon } from '@ng-icons/core';
 
 @Component({
   selector: 'app-admin-dashboard-page',
-  imports: [],
+  imports: [NgIcon],
   templateUrl: './admin-dashboard-page.html',
-  styles: ``
+  styles: ``,
 })
-export class AdminDashboardPage {
-
-}
+export class AdminDashboardPage {}
