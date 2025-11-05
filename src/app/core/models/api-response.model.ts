@@ -13,6 +13,7 @@ export interface ApiMetadata {
   cacheHit: boolean;
   pagination: ApiPagination | null;
   warnings: string[];
+  errors?: Record<string, string[]>;
 }
 
 export interface ApiResponse<T> {

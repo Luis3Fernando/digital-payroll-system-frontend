@@ -75,13 +75,14 @@ export class AuthService {
       }),
       map((apiResponse) => !!apiResponse.data),
       catchError((error) => {
-        if (error.error && error.error.status) {
-          this.toastService.processApiResponse(error.error, 'Error de Autenticación');
+        const apiErrorResponse = error.error;
+        if (apiErrorResponse && apiErrorResponse.status) {
+          this.toastService.processApiResponse(apiErrorResponse, 'Error de Autenticación');
         } else {
           this.toastService.show(
             'error',
-            'Error Desconocido',
-            'Ocurrió un error al intentar iniciar sesión.'
+            'Error de Conexión',
+            'No se pudo conectar con el servidor o el formato de error es inválido.'
           );
         }
         return of(false);
@@ -114,25 +115,27 @@ export class AuthService {
 
   public logout(): Observable<boolean> {
     const refreshToken = this.getRefreshToken();
-
     if (!refreshToken) {
       this.clearStorage();
       this.router.navigateByUrl('/auth/login');
+      this.toastService.show('success', 'Sesión Cerrada', 'Has cerrado tu sesión localmente.');
       return of(true);
     }
 
     const logoutRequest: LogoutRequest = { refresh: refreshToken };
-
     return this.authRepository.logout(logoutRequest).pipe(
-      tap(() => {
+      tap((apiResponse) => {
+        this.toastService.processApiResponse(apiResponse, 'Cierre de Sesión');
+
         this.clearStorage();
         this.router.navigateByUrl('/auth/login');
       }),
       map(() => true),
       catchError((error) => {
-        console.warn(
-          'Error al notificar logout al servidor, forzando cierre de sesión local:',
-          error
+        this.toastService.show(
+          'warning',
+          'Conexión Fallida',
+          'Error al notificar al servidor. Sesión cerrada localmente.'
         );
         this.clearStorage();
         this.router.navigateByUrl('/auth/login');

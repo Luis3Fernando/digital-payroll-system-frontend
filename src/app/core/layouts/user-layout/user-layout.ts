@@ -1,8 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { NgIcon } from '@ng-icons/core';
 import { LoadingButton } from '../../../shared/components/loading-button/loading-button';
+import { AuthService } from '@domains/auth/services/auth.service';
+import { ToastService } from '@shared/services/toast.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-user-layout',
@@ -11,6 +14,9 @@ import { LoadingButton } from '../../../shared/components/loading-button/loading
   styles: ``,
 })
 export class UserLayout {
+  private authService = inject(AuthService);
+  private toastService = inject(ToastService);
+
   sidebarOpen: boolean = true;
   confirmLogoutOpen: boolean = false;
   loadingLogout: boolean = false;
@@ -28,6 +34,16 @@ export class UserLayout {
   }
 
   logout() {
-    // Lógica de cierre de sesión aquí
+    this.loadingLogout = true;
+
+    this.authService
+      .logout()
+      .pipe(
+        finalize(() => {
+          this.loadingLogout = false;
+          this.closeConfirmLogout();
+        })
+      )
+      .subscribe();
   }
 }

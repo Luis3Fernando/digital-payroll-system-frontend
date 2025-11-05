@@ -35,14 +35,45 @@ export class ToastService {
     defaultTitle: string = 'Notificación'
   ): void {
     const type = response.status as ToastType;
-    const messages = response.messages;
+    let messagesToShow: string[] = [];
 
-    if (messages && messages.length > 0) {
-      messages.forEach((msg) => {
+    if (response.meta?.errors) {
+      const fieldErrors = response.meta.errors;
+
+      let foundDetailedErrors = false;
+
+      for (const field in fieldErrors) {
+        if (Object.prototype.hasOwnProperty.call(fieldErrors, field)) {
+          if (Array.isArray(fieldErrors[field]) && fieldErrors[field].length > 0) {
+            foundDetailedErrors = true;
+
+            const fieldName = field === 'non_field_errors' ? 'Error' : field.toUpperCase();
+
+            fieldErrors[field].forEach((msg) => {
+              messagesToShow.push(`${fieldName}: ${msg}`);
+            });
+          }
+        }
+      }
+
+      if (foundDetailedErrors) {
+      } else {
+        messagesToShow = response.messages || [];
+      }
+    } else {
+      messagesToShow = response.messages || [];
+    }
+
+    if (messagesToShow.length > 0) {
+      messagesToShow.forEach((msg) => {
         this.show(type, defaultTitle, msg);
       });
     } else {
-      this.show(type, defaultTitle, `Operación realizada con éxito.`);
+      this.show(
+        type,
+        defaultTitle,
+        `Operación realizada con éxito o error sin mensaje. (Código: ${response.code})`
+      );
     }
   }
 }
