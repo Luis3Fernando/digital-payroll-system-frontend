@@ -4,12 +4,22 @@
       <h1 class="text-2xl font-semibold text-gray-800">Gestión de Usuarios</h1>
       <p class="text-gray-500">Administra los usuarios registrados en el sistema</p>
     </div>
-    <button
-      [disabled]="isLoading"
-      class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition disabled:opacity-50"
-    >
-      <ng-icon name="heroUserPlus" size="20"></ng-icon>Agregar usuarios
-    </button>
+    <div class="flex items-center gap-3">
+      <button
+        (click)="openUploadUsersModal()"
+        [disabled]="isLoading"
+        class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition disabled:opacity-50"
+      >
+        <ng-icon name="heroUserPlus" size="20"></ng-icon>Cargar usuarios
+      </button>
+      <button
+        (click)="openUploadUsersWorksModal()"
+        [disabled]="isLoading"
+        class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition disabled:opacity-50"
+      >
+        <ng-icon name="heroUserPlus" size="20"></ng-icon>Cargar detalles de usuarios
+      </button>
+    </div>
   </div>
   <div class="flex items-center bg-white rounded-lg shadow p-4 border border-gray-100">
     <ng-icon name="heroMagnifyingGlass" size="20" class="text-gray-400"></ng-icon>
@@ -63,4 +73,161 @@
       </table>
     </div>
   </ng-template>
+</div>
+<div
+  *ngIf="uploadUsersModalOpen"
+  class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+>
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative animate-fadeIn">
+    <button
+      (click)="closeUploadUsersModal()"
+      class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition"
+    >
+      <ng-icon name="heroXMark" size="22"></ng-icon>
+    </button>
+    <div class="flex items-center gap-3 mb-5">
+      <div class="bg-blue-100 text-blue-600 p-3 rounded-full flex items-center justify-center">
+        <ng-icon name="heroArrowUpTray" size="22"></ng-icon>
+      </div>
+      <h2 class="text-xl font-semibold text-gray-800">Cargar usuarios desde Excel</h2>
+    </div>
+    <div class="space-y-4">
+      <p class="text-gray-600 text-sm">
+        Sube un archivo <strong>.xlsx</strong> con la información de usuarios. El sistema validará
+        los datos antes de importarlos.
+      </p>
+      <label
+        *ngIf="!selectedUsersFile"
+        for="userFile"
+        class="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 cursor-pointer hover:border-blue-400 transition"
+      >
+        <ng-icon name="heroDocumentArrowUp" size="28" class="text-gray-400 mb-2"></ng-icon>
+        <span class="text-gray-600 text-sm">Haz clic para seleccionar un archivo</span>
+        <input
+          id="userFile"
+          type="file"
+          (change)="onUsersFileSelected($event)"
+          accept=".xlsx,.csv"
+          class="hidden"
+        />
+      </label>
+      <div
+        *ngIf="selectedUsersFile"
+        class="flex items-center justify-between border border-green-300 bg-green-50 rounded-lg p-4"
+      >
+        <div class="flex items-center gap-3">
+          <div class="bg-green-100 text-green-600 p-2 rounded-full">
+            <ng-icon name="heroCheckCircle" size="22"></ng-icon>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-gray-700">{{ selectedUsersFile.name }}</p>
+            <p class="text-xs text-gray-500">Archivo listo para subir</p>
+          </div>
+        </div>
+        <button
+          (click)="removeSelectedUsersFile()"
+          class="text-gray-400 hover:text-red-500 transition"
+          title="Eliminar archivo"
+        >
+          <ng-icon name="heroXMark" size="18"></ng-icon>
+        </button>
+      </div>
+    </div>
+    <div class="flex justify-end mt-6 gap-3">
+      <button
+        (click)="closeUploadUsersModal()"
+        class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+      >
+        Cancelar
+      </button>
+      <app-loading-button
+        (click)="uploadUsersFile()"
+        [text]="'Subir archivo'"
+        [loading]="isUploadingUsers"
+      >
+      </app-loading-button>
+    </div>
+  </div>
+</div>
+<div
+  *ngIf="uploadUsersWorksModalOpen"
+  class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+>
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative animate-fadeIn">
+    <button
+      (click)="closeUploadUsersWorksModal()"
+      class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition"
+    >
+      <ng-icon name="heroXMark" size="22"></ng-icon>
+    </button>
+    <div class="flex items-center gap-3 mb-5">
+      <div class="bg-blue-100 text-blue-600 p-3 rounded-full flex items-center justify-center">
+        <ng-icon name="heroBriefcase" size="22"></ng-icon>
+      </div>
+      <h2 class="text-xl font-semibold text-gray-800">Cargar detalles laborales</h2>
+    </div>
+    <div class="space-y-4">
+      <p class="text-gray-600 text-sm">
+        Sube un archivo <strong>.xlsx</strong> con los detalles laborales de los usuarios. El
+        sistema validará los datos antes de importarlos.
+      </p>
+      <label
+        *ngIf="!selectedWorkDetailsFile"
+        for="workDetailsFile"
+        class="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 cursor-pointer hover:border-blue-400 transition"
+      >
+        <ng-icon name="heroDocumentArrowUp" size="28" class="text-gray-400 mb-2"></ng-icon>
+        <span class="text-gray-600 text-sm">Haz clic para seleccionar un archivo</span>
+        <input
+          id="workDetailsFile"
+          type="file"
+          (change)="onWorkDetailsFileSelected($event)"
+          accept=".xlsx,.csv"
+          class="hidden"
+        />
+      </label>
+
+      <!-- Si HAY archivo: preview con nombre, ícono y botón para eliminar -->
+      <div
+        *ngIf="selectedWorkDetailsFile"
+        class="flex items-center justify-between border border-green-300 bg-green-50 rounded-lg p-4"
+      >
+        <div class="flex items-center gap-3">
+          <div class="bg-green-100 text-green-600 p-2 rounded-full">
+            <ng-icon name="heroCheckCircle" size="20"></ng-icon>
+          </div>
+          <div>
+            <p
+              class="text-sm font-medium text-gray-700 truncate"
+              title="{{ selectedWorkDetailsFile.name }}"
+            >
+              {{ selectedWorkDetailsFile.name }}
+            </p>
+            <p class="text-xs text-gray-500">Archivo listo para subir</p>
+          </div>
+        </div>
+        <button
+          (click)="removeSelectedWorkDetailsFile()"
+          class="text-gray-400 hover:text-red-500 transition"
+          title="Eliminar archivo"
+        >
+          <ng-icon name="heroXMark" size="18"></ng-icon>
+        </button>
+      </div>
+    </div>
+    <div class="flex justify-end mt-6 gap-3">
+      <button
+        (click)="closeUploadUsersWorksModal()"
+        class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+      >
+        Cancelar
+      </button>
+      <app-loading-button
+        (click)="uploadWorkDetailsFile()"
+        [text]="'Subir archivo'"
+        [loading]="isUploadingWorkDetails"
+      >
+      </app-loading-button>
+    </div>
+  </div>
 </div>

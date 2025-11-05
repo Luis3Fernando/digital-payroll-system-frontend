@@ -7,19 +7,30 @@ import { ProfileService } from '@domains/admin/services/profile.service';
 import { NgIcon } from '@ng-icons/core';
 import { SessionService } from '@domains/auth/services/session.service';
 import { Subject, debounceTime } from 'rxjs';
+import { LoadingButton } from '@shared/components/loading-button/loading-button';
+import { ToastService } from '@shared/services/toast.service';
 
 @Component({
   selector: 'app-user-management-page',
-  imports: [NgIcon, FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [NgIcon, FormsModule, ReactiveFormsModule, CommonModule, LoadingButton],
   templateUrl: './user-management-page.html',
 })
 export class UserManagementPage {
   private profileService = inject(ProfileService);
   private sessionService = inject(SessionService);
   private searchSubject = new Subject<string>();
+  private toastService = inject(ToastService);
 
   public users: UserProfile[] = [];
   public isLoading: boolean = false;
+
+  public selectedUsersFile: File | null = null;
+  public uploadUsersModalOpen = false;
+  public isUploadingUsers = false;
+
+  public selectedWorkDetailsFile: File | null = null;
+  public uploadUsersWorksModalOpen = false;
+  public isUploadingWorkDetails = false;
 
   public currentSearchTerm: string = '';
   public currentPage: number = 1;
@@ -72,8 +83,95 @@ export class UserManagementPage {
     });
   }
 
+  onUsersFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedUsersFile = input.files[0];
+    }
+  }
+
+  uploadUsersFile(): void {
+    if (!this.selectedUsersFile) {
+      this.toastService.show(
+        'warning',
+        'Archivo Requerido',
+        'Debes adjuntar un archivo Excel o CSV antes de continuar.'
+      );
+      return;
+    }
+    this.isUploadingUsers = true;
+
+    this.profileService.uploadUsers(this.selectedUsersFile).subscribe({
+      next: () => {
+        this.loadUsers();
+        this.closeUploadUsersModal();
+        this.selectedUsersFile = null;
+        this.loadUsers();
+      },
+      error: () => (this.isUploadingUsers = false),
+      complete: () => (this.isUploadingUsers = false),
+    });
+  }
+
+  onWorkDetailsFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedWorkDetailsFile = input.files[0];
+    }
+  }
+
+  uploadWorkDetailsFile(): void {
+    if (!this.selectedWorkDetailsFile) {
+      this.toastService.show(
+        'warning',
+        'Archivo Requerido',
+        'Debes adjuntar un archivo Excel o CSV antes de continuar.'
+      );
+      return;
+    }
+    this.isUploadingWorkDetails = true;
+
+    this.profileService.uploadWorkDetails(this.selectedWorkDetailsFile).subscribe({
+      next: () => {
+        this.loadUsers();
+        this.closeUploadUsersWorksModal();
+        this.selectedWorkDetailsFile = null;
+      },
+      error: () => (this.isUploadingWorkDetails = false),
+      complete: () => (this.isUploadingWorkDetails = false),
+    });
+  }
+
+  removeSelectedUsersFile(): void {
+    this.selectedUsersFile = null;
+  }
+
+  removeSelectedWorkDetailsFile(): void {
+    this.selectedWorkDetailsFile = null;
+    const input = document.getElementById('workDetailsFile') as HTMLInputElement | null;
+    if (input) {
+      input.value = '';
+    }
+  }
+
   onPageChange(newPage: number): void {
     this.currentPage = newPage;
     this.loadUsers();
+  }
+
+  openUploadUsersModal(): void {
+    this.uploadUsersModalOpen = true;
+  }
+
+  closeUploadUsersModal(): void {
+    this.uploadUsersModalOpen = false;
+  }
+
+  openUploadUsersWorksModal(): void {
+    this.uploadUsersWorksModalOpen = true;
+  }
+
+  closeUploadUsersWorksModal(): void {
+    this.uploadUsersWorksModalOpen = false;
   }
 }

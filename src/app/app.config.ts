@@ -15,12 +15,15 @@ import {
   heroArrowPath,
   heroArrowRightOnRectangle,
   heroArrowUpTray,
+  heroBriefcase,
   heroCheckCircle,
   heroChevronLeft,
   heroChevronRight,
   heroClock,
+  heroCloudArrowUp,
   heroCog6Tooth,
   heroDocumentArrowDown,
+  heroDocumentArrowUp,
   heroDocumentDuplicate,
   heroDocumentText,
   heroHome,
@@ -35,6 +38,7 @@ import {
   heroUserCircle,
   heroUserPlus,
   heroUsers,
+  heroXMark,
 } from '@ng-icons/heroicons/outline';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideToastr } from 'ngx-toastr';
@@ -73,6 +77,10 @@ export const appConfig: ApplicationConfig = {
       heroChevronRight,
       heroCog6Tooth,
       heroUserCircle,
+      heroCloudArrowUp,
+      heroDocumentArrowUp,
+      heroXMark,
+      heroBriefcase
     }),
   ],
 };

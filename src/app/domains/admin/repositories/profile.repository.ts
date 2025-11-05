@@ -5,6 +5,7 @@ import { environment } from '@env/environment';
 
 import { ApiResponse } from '@core/models/api-response.model';
 import { UserListParams, UserProfile } from '../models/user-profile.model';
+import { UploadUsersResponseData } from '../models/profile.model';
 
 @Injectable({
   providedIn: 'root',
@@ -29,5 +30,19 @@ export class ProfileRepository {
     }
 
     return this.http.get<ApiResponse<UserProfile[]>>(url, { params: httpParams });
+  }
+
+  public uploadUsersFile(file: File): Observable<ApiResponse<UploadUsersResponseData>> {
+    const url = `${this.PROFILES_URL}/upload-users/`;
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    return this.http.post<ApiResponse<UploadUsersResponseData>>(url, formData);
+  }
+
+  public uploadWorkDetailsFile(file: File): Observable<ApiResponse<UploadUsersResponseData>> {
+    const url = `${this.PROFILES_URL}/upload-work-details/`;
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    return this.http.post<ApiResponse<UploadUsersResponseData>>(url, formData);
   }
 }
