@@ -34,14 +34,15 @@ import {
   heroUserPlus,
   heroUsers,
 } from '@ng-icons/heroicons/outline';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { AuthInterceptor } from '@core/interceptors/token.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([AuthInterceptor])),
     provideClientHydration(withEventReplay()),
     provideIcons({
       heroIdentification,
