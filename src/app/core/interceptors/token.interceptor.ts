@@ -68,7 +68,7 @@ export const AuthInterceptor: HttpInterceptorFn = (
           );
         } else {
           return sessionService.accessTokenRefreshed$.pipe(
-            filter((refreshed) => refreshed !== false),
+            filter((refreshed) => refreshed !== true),
             take(1),
             switchMap(() => {
               const newAccessToken = sessionService.getAccessToken();

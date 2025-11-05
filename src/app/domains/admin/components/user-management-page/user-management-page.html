@@ -5,74 +5,62 @@
       <p class="text-gray-500">Administra los usuarios registrados en el sistema</p>
     </div>
     <button
-      class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+      [disabled]="isLoading"
+      class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition disabled:opacity-50"
     >
-      <ng-icon name="heroUserPlus" size="20"></ng-icon>
-      Agregar usuarios
+      <ng-icon name="heroUserPlus" size="20"></ng-icon>Agregar usuarios
     </button>
   </div>
   <div class="flex items-center bg-white rounded-lg shadow p-4 border border-gray-100">
     <ng-icon name="heroMagnifyingGlass" size="20" class="text-gray-400"></ng-icon>
     <input
       type="text"
-      placeholder="Buscar usuario..."
+      placeholder="Buscar nombre o apellido..."
+      [(ngModel)]="currentSearchTerm"
+      (ngModelChange)="onSearchChange()"
       class="w-full ml-3 outline-none border-0 focus:ring-0 text-gray-700 placeholder-gray-400"
     />
   </div>
-  <div class="overflow-x-auto bg-white rounded-xl shadow border border-gray-100">
-    <table class="min-w-full text-sm text-left text-gray-700">
-      <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
-        <tr>
-          <th class="px-6 py-3 font-semibold">Nombre</th>
-          <th class="px-6 py-3 font-semibold">Apellidos</th>
-          <th class="px-6 py-3 font-semibold">Tipo de documento</th>
-          <th class="px-6 py-3 font-semibold">DNI</th>
-          <th class="px-6 py-3 font-semibold">Cargo</th>
-          <th class="px-6 py-3 font-semibold">Fecha de ingreso</th>
-          <th class="px-6 py-3 font-semibold text-center">Estado</th>
-          <th class="px-6 py-3 font-semibold text-right">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let user of users" class="border-t hover:bg-gray-50 transition">
-          <td class="px-6 py-3">{{ user.nombre }}</td>
-          <td class="px-6 py-3">{{ user.apellidos }}</td>
-          <td class="px-6 py-3">{{ user.tipoDocumento }}</td>
-          <td class="px-6 py-3">{{ user.dni }}</td>
-          <td class="px-6 py-3">{{ user.cargo }}</td>
-          <td class="px-6 py-3">{{ user.fechaIngreso }}</td>
-          <td class="px-6 py-3 text-center">
-            <span
-              class="px-3 py-1 rounded-full text-xs font-medium"
-              [ngClass]="{
-                'bg-green-100 text-green-700': user.estado === 'Activo',
-                'bg-red-100 text-red-600': user.estado === 'Inactivo'
-              }"
-            >
-              {{ user.estado }}
-            </span>
-          </td>
-          <td class="px-6 py-3 flex items-center justify-end gap-2">
-            <button class="p-2 rounded-lg hover:bg-gray-100">
-              <ng-icon name="heroTrash" size="18" class="text-red-500"></ng-icon>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="flex items-center justify-between mt-4">
-    <p class="text-sm text-gray-500">Mostrando 1–20 de {{ users.length }} usuarios</p>
-    <div class="flex items-center gap-2">
-      <button class="p-2 rounded-lg hover:bg-gray-100">
-        <ng-icon name="heroChevronLeft" size="20"></ng-icon>
-      </button>
-      <button class="px-3 py-1 bg-blue-600 text-white rounded-lg">1</button>
-      <button class="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-lg">2</button>
-      <button class="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-lg">3</button>
-      <button class="p-2 rounded-lg hover:bg-gray-100">
-        <ng-icon name="heroChevronRight" size="20"></ng-icon>
-      </button>
+  <div *ngIf="isLoading; else tableContent">
+    <div
+      class="flex justify-center items-center h-40 bg-white rounded-xl shadow border border-gray-100"
+    >
+      <p class="text-gray-500 font-medium">Cargando datos, espere por favor...</p>
     </div>
   </div>
+  <ng-template #tableContent>
+    <div
+      *ngIf="users.length === 0 && !isLoading"
+      class="p-6 bg-white rounded-xl shadow border border-gray-100"
+    >
+      <p class="text-center text-gray-500">No se encontraron usuarios para la búsqueda actual.</p>
+    </div>
+    <div
+      *ngIf="users.length > 0"
+      class="overflow-x-auto bg-white rounded-xl shadow border border-gray-100"
+    >
+      <table class="min-w-full text-sm text-left text-gray-700">
+        <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+          <tr>
+            <th class="px-6 py-3 font-semibold">DNI</th>
+            <th class="px-6 py-3 font-semibold">Nombres</th>
+            <th class="px-6 py-3 font-semibold">Apellidos</th>
+            <th class="px-6 py-3 font-semibold">Condición</th>
+            <th class="px-6 py-3 font-semibold">Posición</th>
+            <th class="px-6 py-3 font-semibold">Fecha de Creación</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users" class="border-t hover:bg-gray-50 transition">
+            <td class="px-6 py-3">{{ user.dni }}</td>
+            <td class="px-6 py-3">{{ user.first_name }}</td>
+            <td class="px-6 py-3">{{ user.last_name }}</td>
+            <td class="px-6 py-3">{{ user.condition }}</td>
+            <td class="px-6 py-3">{{ user.position }}</td>
+            <td class="px-6 py-3">{{ user.created_at | date : 'dd/MM/yyyy' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-template>
 </div>

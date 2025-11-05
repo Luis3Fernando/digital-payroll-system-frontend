@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { AdminDashboardStats } from '@domains/admin/models/dashboard-stats.model';
 import { AdminDashboardService } from '@domains/admin/services/admin-dashboard.service';
 import { NgIcon } from '@ng-icons/core';
@@ -11,7 +11,6 @@ import { NgIcon } from '@ng-icons/core';
 })
 export class AdminDashboardPage implements OnInit {
   private dashboardService = inject(AdminDashboardService);
-
   isLoading: boolean = true;
   hasError: boolean = false;
 
