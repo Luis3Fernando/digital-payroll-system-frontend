@@ -4,5 +4,4 @@ export interface Session {
   access: string;
   refresh: string;
   user: User;
-  timestamp: number;
 }

@@ -4,7 +4,6 @@ import { UserManagementPage } from './components/user-management-page/user-manag
 import { BoletaManagementPage } from './components/boleta-management-page/boleta-management-page';
 import { LoginAdminPage } from './components/login-admin-page/login-admin-page';
 import { AdminLayout } from '../../core/layouts/admin-layout/admin-layout';
-import { AuditPage } from './components/audit-page/audit-page';
 
 export const adminRoutes: Routes = [
   { path: 'login', component: LoginAdminPage },

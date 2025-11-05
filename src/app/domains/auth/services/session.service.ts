@@ -30,7 +30,6 @@ export class SessionService {
       access: response.access,
       refresh: response.refresh,
       user: response.user,
-      timestamp: Date.now(),
     };
 
     this.setSessionToStorage(sessionData);

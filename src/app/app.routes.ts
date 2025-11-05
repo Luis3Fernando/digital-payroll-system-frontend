@@ -11,13 +11,11 @@ export const appRoutes: Routes = [
   {
     path: 'payroll',
     canActivate: [],
-    data: { roles: [APP_ROLES.user, APP_ROLES.admin] },
     loadChildren: () => import('./domains/payroll/payroll.routes').then((m) => m.payrollRoutes),
   },
   {
     path: 'admin',
     canActivate: [],
-    data: { roles: [APP_ROLES.user, APP_ROLES.admin] },
     loadChildren: () => import('./domains/admin/admin.routes').then((m) => m.adminRoutes),
   },
   { path: '**', redirectTo: 'auth/login' },

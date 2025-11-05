@@ -3,40 +3,75 @@
     <h1 class="text-2xl font-semibold text-gray-800">Dashboard</h1>
     <p class="text-gray-500">Resumen general del sistema</p>
   </div>
+
+  @if (isLoading) {
+  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+    <div
+      *ngFor="let i of [1, 2, 3, 4]"
+      class="bg-gray-200 rounded-xl shadow p-5 border border-gray-100 animate-pulse h-32"
+    ></div>
+  </div>
+  <div class="text-center text-gray-500 mt-10">Cargando estadísticas...</div>
+
+  } @else if (hasError) {
+  <div class="bg-red-50 border border-red-200 text-red-700 p-8 rounded-xl text-center space-y-4">
+    <p class="font-semibold">⚠️ No se pudieron obtener las estadísticas.</p>
+    <p class="text-sm">Ocurrió un error. Por favor, inténtelo de nuevo.</p>
+    <button
+      (click)="loadStats()"
+      class="mt-4 px-6 py-2 bg-red-600 text-white font-medium rounded-lg shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition"
+    >
+      Reintentar Carga
+    </button>
+  </div>
+
+  } @else if (dashboardStats) {
   <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
     <div class="bg-white rounded-xl shadow p-5 border border-gray-100 transition hover:shadow-md">
       <div class="flex items-center justify-between mb-3">
         <h3 class="text-sm font-medium text-gray-600">Usuarios registrados</h3>
         <ng-icon name="heroUsers" size="22"></ng-icon>
       </div>
-      <h2 class="text-3xl font-bold text-blue-600">120</h2>
-      <p class="text-xs text-gray-400 mt-1">+5 nuevos hoy</p>
+      <h2 class="text-3xl font-bold text-blue-600">{{ dashboardStats.users.total }}</h2>
+      <p class="text-xs text-gray-400 mt-1">
+        +{{ dashboardStats.users.today_registered }} nuevos hoy
+      </p>
     </div>
+
     <div class="bg-white rounded-xl shadow p-5 border border-gray-100 transition hover:shadow-md">
       <div class="flex items-center justify-between mb-3">
         <h3 class="text-sm font-medium text-gray-600">Boletas generadas</h3>
         <ng-icon name="heroDocumentDuplicate" size="22"></ng-icon>
       </div>
-      <h2 class="text-3xl font-bold text-blue-600">340</h2>
-      <p class="text-xs text-gray-400 mt-1">Última: hace 3 min</p>
+      <h2 class="text-3xl font-bold text-blue-600">
+        {{ dashboardStats.payslips_generated.total }}
+      </h2>
+      <p class="text-xs text-gray-400 mt-1">
+        Última: {{ dashboardStats.payslips_generated.last_generated | date : 'shortTime' }}
+      </p>
     </div>
+
     <div class="bg-white rounded-xl shadow p-5 border border-gray-100 transition hover:shadow-md">
       <div class="flex items-center justify-between mb-3">
-        <h3 class="text-sm font-medium text-gray-600">Pendientes</h3>
+        <h3 class="text-sm font-medium text-gray-600">No Vistas</h3>
         <ng-icon name="heroClock" size="22"></ng-icon>
       </div>
-      <h2 class="text-3xl font-bold text-yellow-500">25</h2>
-      <p class="text-xs text-gray-400 mt-1">En revisión</p>
+      <h2 class="text-3xl font-bold text-yellow-500">{{ dashboardStats.payslips_unseen.total }}</h2>
+      <p class="text-xs text-gray-400 mt-1">Pendientes de revisión</p>
     </div>
+
     <div class="bg-white rounded-xl shadow p-5 border border-gray-100 transition hover:shadow-md">
       <div class="flex items-center justify-between mb-3">
-        <h3 class="text-sm font-medium text-gray-600">Aprobadas</h3>
+        <h3 class="text-sm font-medium text-gray-600">Vistas</h3>
         <ng-icon name="heroCheckCircle" size="22"></ng-icon>
       </div>
-      <h2 class="text-3xl font-bold text-green-500">315</h2>
-      <p class="text-xs text-gray-400 mt-1">+2 hoy</p>
+      <h2 class="text-3xl font-bold text-green-500">{{ dashboardStats.payslips_seen.total }}</h2>
+      <p class="text-xs text-gray-400 mt-1">
+        Última vista: {{ dashboardStats.payslips_seen.last_seen | date : 'shortTime' }}
+      </p>
     </div>
   </div>
+  }
   <div class="bg-white rounded-xl shadow p-8 border border-gray-100 text-center space-y-4">
     <div class="flex flex-col items-center justify-center space-y-3">
       <ng-icon name="heroArrowUpTray" size="40"></ng-icon>

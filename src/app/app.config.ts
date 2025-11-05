@@ -1,4 +1,5 @@
 import {
+  APP_INITIALIZER,
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
@@ -36,17 +37,16 @@ import {
   heroUsers,
 } from '@ng-icons/heroicons/outline';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { AuthInterceptor } from '@core/interceptors/token.interceptor';
 import { provideToastr } from 'ngx-toastr';
+import { AuthInterceptor } from '@core/interceptors/token.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes),
-    provideHttpClient(withInterceptors([AuthInterceptor])),
-    provideClientHydration(withEventReplay()),
     provideAnimations(),
+    provideHttpClient(withInterceptors([AuthInterceptor])),
     provideToastr(),
     provideIcons({
       heroIdentification,
