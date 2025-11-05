@@ -78,12 +78,11 @@ export class PayrollService {
   }
 
   public listPayslips(params: PayslipListParams): Observable<PayslipListResponse> {
-    
     return this.payrollRepository.listPayslips(params).pipe(
       map((response) => {
-        return { 
-            payslips: response.data, 
-            pagination: response.meta.pagination 
+        return {
+          payslips: response.data,
+          pagination: response.meta.pagination,
         };
       }),
 
@@ -99,7 +98,40 @@ export class PayrollService {
             'No se pudo obtener el listado de boletas. Verifique su conexión.'
           );
         }
-        
+
+        return throwError(() => error);
+      })
+    );
+  }
+
+  public clearPayslips(): Observable<void> {
+    return this.payrollRepository.clearPayslips().pipe(
+      map((response) => {
+        if (response.messages && response.messages.length > 0) {
+          this.toastService.show('success', 'Limpieza Exitosa', response.messages[0]);
+        } else {
+          this.toastService.show(
+            'success',
+            'Limpieza Exitosa',
+            'Todas las boletas han sido eliminadas correctamente.'
+          );
+        }
+        return;
+      }),
+
+      catchError((error) => {
+        const apiErrorResponse = error.error as ApiResponse<any>;
+
+        if (apiErrorResponse && apiErrorResponse.status) {
+          this.toastService.processApiResponse(apiErrorResponse, 'Error al Eliminar Boletas');
+        } else {
+          this.toastService.show(
+            'error',
+            'Fallo de Conexión',
+            'No se pudo completar la limpieza masiva. Verifique su conexión.'
+          );
+        }
+
         return throwError(() => error);
       })
     );

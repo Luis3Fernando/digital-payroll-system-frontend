@@ -20,22 +20,21 @@ export class BoletaManagementPage {
   private toastService = inject(ToastService);
   private searchSubject = new Subject<string>();
 
-  // Estado de carga
   public isLoading = false;
   public isUploadingBoletas = false;
 
-  // Listado de boletas
   public payslips: Payslip[] = [];
   public paginationMeta: ApiPagination | null = null;
 
-  // Parámetros de búsqueda y paginación
   public currentPage = 1;
   public pageSize = 20;
   public currentSearchTerm = '';
 
-  // Modal de carga de boletas
   public uploadBoletasModalOpen = false;
   public selectedBoletasFile: File | null = null;
+
+  clearPayslipsModalOpen = false;
+  isClearingPayslips = false;
 
   constructor() {}
 
@@ -128,6 +127,27 @@ export class BoletaManagementPage {
       },
       error: () => (this.isUploadingBoletas = false),
       complete: () => (this.isUploadingBoletas = false),
+    });
+  }
+
+  openClearPayslipsModal(): void {
+    this.clearPayslipsModalOpen = true;
+  }
+
+  closeClearPayslipsModal(): void {
+    this.clearPayslipsModalOpen = false;
+  }
+
+  confirmClearPayslips(): void {
+    this.isClearingPayslips = true;
+
+    this.payrollService.clearPayslips().subscribe({
+      next: () => {
+        this.closeClearPayslipsModal();
+        this.loadPayslips();
+      },
+      error: () => (this.isClearingPayslips = false),
+      complete: () => (this.isClearingPayslips = false),
     });
   }
 }

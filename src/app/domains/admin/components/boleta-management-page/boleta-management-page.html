@@ -13,6 +13,7 @@
         Cargar desde Excel
       </button>
       <button
+        (click)="openClearPayslipsModal()"
         class="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition"
       >
         <ng-icon name="heroTrash" size="20"></ng-icon>
@@ -34,7 +35,7 @@
         <tr *ngFor="let boleta of payslips" class="border-t hover:bg-gray-50 transition">
           <td class="px-6 py-3">{{ boleta.profile_dni }}</td>
           <td class="px-6 py-3">{{ boleta.concept }}</td>
-          <td class="px-6 py-3">s/. {{ boleta.amount}}</td>
+          <td class="px-6 py-3">s/. {{ boleta.amount }}</td>
           <td class="px-6 py-3 text-center">
             <span
               class="px-3 py-1 rounded-full text-xs font-medium"
@@ -102,7 +103,6 @@
   </div>
 </div>-->
 </div>
-
 <div
   *ngIf="uploadBoletasModalOpen"
   class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
@@ -173,6 +173,32 @@
         (click)="uploadBoletasFile()"
         [text]="'Subir archivo'"
         [loading]="isUploadingBoletas"
+      >
+      </app-loading-button>
+    </div>
+  </div>
+</div>
+<div
+  *ngIf="clearPayslipsModalOpen"
+  class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+>
+  <div class="bg-white rounded-lg shadow-lg max-w-sm w-full p-6 text-center">
+    <h2 class="text-lg font-semibold text-gray-800 mb-4">
+      ¿Estás seguro que deseas cerrar sesión?
+    </h2>
+    <div class="flex justify-center gap-4">
+      <button
+        (click)="closeClearPayslipsModal()"
+        [disabled]="isClearingPayslips"
+        class="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+      >
+        Cancelar
+      </button>
+      <app-loading-button
+        [text]="'Eliminar'"
+        [loading]="isClearingPayslips"
+        type="button"
+        (click)="confirmClearPayslips()"
       >
       </app-loading-button>
     </div>

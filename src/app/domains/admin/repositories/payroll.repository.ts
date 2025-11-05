@@ -38,4 +38,9 @@ export class PayrollRepository {
 
     return this.http.get<ApiResponse<Payslip[]>>(url, { params: httpParams });
   }
+
+  public clearPayslips(): Observable<ApiResponse<any>> {
+    const url = `${this.PAYSLIPS_URL}/clear-payslips/`;
+    return this.http.delete<ApiResponse<any>>(url);
+  }
 }
