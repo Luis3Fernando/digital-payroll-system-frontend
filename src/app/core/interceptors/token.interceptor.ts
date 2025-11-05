@@ -6,9 +6,10 @@ import {
   HttpErrorResponse,
 } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { Observable, throwError, catchError, switchMap, finalize, of, take, filter } from 'rxjs';
+import { Observable, throwError, catchError, switchMap, of, take, filter } from 'rxjs';
 
 import { AuthService } from '@domains/auth/services/auth.service';
+import { SessionService } from '@domains/auth/services/session.service';
 import { Router } from '@angular/router';
 
 let isRefreshing = false;
@@ -26,9 +27,10 @@ export const AuthInterceptor: HttpInterceptorFn = (
   next: HttpHandlerFn
 ): Observable<HttpEvent<unknown>> => {
   const authService = inject(AuthService);
+  const sessionService = inject(SessionService);
   const router = inject(Router);
 
-  const accessToken = authService.getAccessToken();
+  const accessToken = sessionService.getAccessToken();
   let clonedRequest = accessToken ? addToken(req, accessToken) : req;
 
   return next(clonedRequest).pipe(
@@ -36,10 +38,10 @@ export const AuthInterceptor: HttpInterceptorFn = (
       if (error.status === 401 && !req.url.includes('/auth/refresh')) {
         if (!isRefreshing) {
           isRefreshing = true;
-          const refreshToken = authService.getRefreshToken();
+          const refreshToken = sessionService.getRefreshToken();
 
           if (!refreshToken) {
-            authService.clearStorage();
+            sessionService.clearSession();
             router.navigate(['/auth/login']);
             return throwError(() => error);
           }
@@ -48,28 +50,28 @@ export const AuthInterceptor: HttpInterceptorFn = (
             switchMap(() => {
               isRefreshing = false;
 
-              const newAccessToken = authService.getAccessToken();
+              const newAccessToken = sessionService.getAccessToken();
               if (newAccessToken) {
                 return next(addToken(req, newAccessToken));
               } else {
-                authService.clearStorage();
+                sessionService.clearSession();
                 router.navigate(['/auth/login']);
                 return throwError(() => error);
               }
             }),
             catchError((refreshError) => {
               isRefreshing = false;
-              authService.clearStorage();
+              sessionService.clearSession();
               router.navigate(['/auth/login']);
               return throwError(() => refreshError);
             })
           );
         } else {
-          return authService.accessTokenRefreshed$.pipe(
+          return sessionService.accessTokenRefreshed$.pipe(
             filter((refreshed) => refreshed !== false),
             take(1),
             switchMap(() => {
-              const newAccessToken = authService.getAccessToken();
+              const newAccessToken = sessionService.getAccessToken();
               return newAccessToken
                 ? next(addToken(req, newAccessToken))
                 : throwError(() => new Error('Refresh fallido, token no disponible'));
