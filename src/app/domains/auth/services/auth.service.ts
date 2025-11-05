@@ -8,6 +8,7 @@ import { LoginResponse } from '@auth/models/auth-response.model';
 import { User } from '@auth/models/user.model';
 import { isPlatformBrowser } from '@angular/common';
 import { APP_ROLES } from '@shared/utils/roles';
+import { ToastService } from '@shared/services/toast.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +17,7 @@ export class AuthService {
   private authRepository = inject(AuthRepository);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
+  private toastService = inject(ToastService);
 
   private isBrowser = isPlatformBrowser(this.platformId);
 
@@ -58,7 +60,8 @@ export class AuthService {
   public login(request: LoginRequest): Observable<boolean> {
     return this.authRepository.login(request).pipe(
       tap((apiResponse) => {
-        if (apiResponse.data) {
+        const responseData = apiResponse.data;
+        if (responseData) {
           this.setTokens(apiResponse.data);
           this.isAuthenticatedSubject.next(true);
           this.currentUserSubject.next(apiResponse.data.user);
@@ -67,11 +70,20 @@ export class AuthService {
               ? '/admin/dashboard'
               : '/payroll/dashboard';
           this.router.navigateByUrl(redirectUrl);
+          this.toastService.processApiResponse(apiResponse, 'Inicio de Sesión');
         }
       }),
       map((apiResponse) => !!apiResponse.data),
       catchError((error) => {
-        console.error('Error durante el inicio de sesión:', error);
+        if (error.error && error.error.status) {
+          this.toastService.processApiResponse(error.error, 'Error de Autenticación');
+        } else {
+          this.toastService.show(
+            'error',
+            'Error Desconocido',
+            'Ocurrió un error al intentar iniciar sesión.'
+          );
+        }
         return of(false);
       })
     );
