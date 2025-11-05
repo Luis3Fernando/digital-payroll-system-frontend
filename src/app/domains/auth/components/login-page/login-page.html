@@ -31,7 +31,7 @@
       <p class="text-sm text-gray-500 text-center mb-8">
         Accede a tu cuenta para gestionar tus boletas de pago.
       </p>
-      <form class="space-y-5" (ngSubmit)="onSubmit()" autocomplete="off">
+      <form class="space-y-5" autocomplete="off">
         <div class="relative space-y-1">
           <label for="dni" class="block text-sm font-medium text-gray-600"> DNI </label>
           <div class="relative">
@@ -80,6 +80,7 @@
           [loading]="isLoading"
           (click)="onSubmit()"
           [text]="'Iniciar Sesión'"
+          [type]="'submit'"
         ></app-loading-button>
       </form>
     </div>

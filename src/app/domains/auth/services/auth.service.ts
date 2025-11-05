@@ -96,18 +96,51 @@ export class AuthService {
         if (apiResponse.data) {
           const userRole = apiResponse.data.user.role;
           if (userRole === APP_ROLES.admin) {
-            this.setTokens(apiResponse.data);
-            this.isAuthenticatedSubject.next(true);
-            this.currentUserSubject.next(apiResponse.data.user);
-            this.router.navigateByUrl('/admin/dashboard');
-            return true;
+            return apiResponse.data;
           } else {
-            throw new Error('Solo el personal administrativo puede acceder a este formulario.');
+            this.toastService.show(
+              'error',
+              'Acceso Restringido',
+              'Esta área es solo para personal administrativo.'
+            );
+            throw new Error('AUTH_ROLE_VIOLATION');
           }
         }
-        return false;
+        return null;
       }),
+
+      tap((data) => {
+        if (data) {
+          this.setTokens(data);
+          this.isAuthenticatedSubject.next(true);
+          this.currentUserSubject.next(data.user);
+          this.router.navigateByUrl('/admin/dashboard');
+          this.toastService.show(
+            'success',
+            'Bienvenido Admin',
+            `Acceso exitoso. Bienvenido, ${data.user.username}.`
+          );
+        }
+      }),
+
+      map((data) => !!data),
       catchError((error) => {
+        if (error.message === 'AUTH_ROLE_VIOLATION') {
+          this.clearStorage();
+          return of(false);
+        }
+        const apiErrorResponse = error.error;
+        if (apiErrorResponse && apiErrorResponse.status) {
+          this.toastService.processApiResponse(apiErrorResponse, 'Error de Autenticación');
+        } else {
+          this.toastService.show(
+            'error',
+            'Error Desconocido',
+            'Ocurrió un error de conexión o de servidor.'
+          );
+        }
+
+        this.clearStorage();
         return of(false);
       })
     );
