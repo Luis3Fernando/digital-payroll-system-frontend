@@ -5,6 +5,7 @@ import { UploadUsersResponseData } from '../../admin/models/profile.model';
 import { environment } from '@env/environment';
 import { ApiResponse } from '@core/models/api-response.model';
 import { MyPayslipListParams, Payslip, PayslipListParams } from '../models/payrolls.model';
+import { PayslipGenerationData, PayslipViewData } from '../models/generate-pdf.model';
 
 @Injectable({
   providedIn: 'root',
@@ -63,5 +64,21 @@ export class PayrollRepository {
     }
 
     return this.http.get<ApiResponse<Payslip[]>>(url, { params: httpParams });
+  }
+
+  public generatePayslip(id: string): Observable<ApiResponse<PayslipGenerationData>> {
+    const url = `${this.PAYSLIPS_URL}/generate-payslip`;
+    let httpParams = new HttpParams();
+    httpParams = httpParams.set('id', id);
+    return this.http.get<ApiResponse<PayslipGenerationData>>(url, { params: httpParams });
+  }
+
+  public viewPayslip(id: string): Observable<ApiResponse<PayslipViewData>> {
+    const url = `${this.PAYSLIPS_URL}/view-payslip`;
+
+    let httpParams = new HttpParams();
+    httpParams = httpParams.set('id', id);
+
+    return this.http.get<ApiResponse<PayslipViewData>>(url, { params: httpParams });
   }
 }

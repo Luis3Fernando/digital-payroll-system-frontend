@@ -11,6 +11,7 @@ export interface Payslip {
   data_type: string;
   position_order: number;
   isLoading?: boolean;
+  pdf_url?: string;
 }
 
 export interface PayslipListParams {

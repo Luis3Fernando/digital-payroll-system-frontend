@@ -78,17 +78,38 @@ export class PayslipListPage implements OnInit {
   }
 
   accionBoleta(boleta: Payslip) {
-    if (boleta.isLoading) return; // prevenir clicks múltiples
+    if (boleta.isLoading) return;
     boleta.isLoading = true;
 
-    // Simulamos un proceso asíncrono (generar/ver boleta)
-    setTimeout(() => {
-      if (boleta.view_status === 'unseen') {
-        boleta.view_status = 'generated'; // Boleta generada
-      } else if (boleta.view_status === 'generated') {
-        boleta.view_status = 'seen'; // Boleta vista
-      }
-      boleta.isLoading = false; // Fin del proceso
-    }, 1500); // simulamos 1.5 segundos de carga
+    if (boleta.view_status === 'unseen') {
+      this.payrollService.generatePayslip(boleta.id).subscribe({
+        next: (res) => {
+          boleta.view_status = res.view_status; // 'generated'
+          boleta['pdf_url'] = res.pdf_url;
+        },
+        error: () => {},
+        complete: () => {
+          boleta.isLoading = false;
+        },
+      });
+    } else if (boleta.view_status === 'generated') {
+      this.payrollService.viewPayslip(boleta.id).subscribe({
+        next: (res) => {
+          boleta.view_status = res.status;
+          boleta['pdf_url'] = res.pdf_url;
+          if (boleta.pdf_url) {
+            const link = document.createElement('a');
+            link.href = boleta.pdf_url;
+            link.target = '_blank';
+            link.download = `Boleta_${boleta.id}.pdf`;
+            link.click();
+          }
+        },
+        error: () => {},
+        complete: () => {
+          boleta.isLoading = false;
+        },
+      });
+    }
   }
 }

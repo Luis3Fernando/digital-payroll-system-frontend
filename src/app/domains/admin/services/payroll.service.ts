@@ -5,6 +5,7 @@ import { ToastService } from '@shared/services/toast.service';
 import { UploadUsersResponseData } from '../models/profile.model';
 import { ApiPagination, ApiResponse } from '@core/models/api-response.model';
 import { MyPayslipListParams, Payslip, PayslipListParams } from '../models/payrolls.model';
+import { PayslipGenerationData, PayslipViewData } from '../models/generate-pdf.model';
 
 export interface PayslipListResponse {
   payslips: Payslip[];
@@ -164,6 +165,70 @@ export class PayrollService {
           );
         }
 
+        return throwError(() => error);
+      })
+    );
+  }
+
+  public generatePayslip(id: string): Observable<PayslipGenerationData> {
+    return this.payrollRepository.generatePayslip(id).pipe(
+      map((response) => {
+        if (response.messages && response.messages.length > 0) {
+          this.toastService.show('success', 'Generación Exitosa', response.messages[0]);
+        } else {
+          this.toastService.show(
+            'success',
+            'Generación Exitosa',
+            'La boleta se generó correctamente.'
+          );
+        }
+        return response.data;
+      }),
+
+      catchError((error) => {
+        const apiErrorResponse = error.error as ApiResponse<any>;
+
+        if (apiErrorResponse && apiErrorResponse.status) {
+          this.toastService.processApiResponse(apiErrorResponse, 'Error al Generar Boleta');
+        } else {
+          this.toastService.show(
+            'error',
+            'Fallo de Conexión',
+            'No se pudo generar la boleta. Verifique su conexión.'
+          );
+        }
+        return throwError(() => error);
+      })
+    );
+  }
+
+  public viewPayslip(id: string): Observable<PayslipViewData> {
+    return this.payrollRepository.viewPayslip(id).pipe(
+      map((response) => {
+        if (response.messages && response.messages.length > 0) {
+          this.toastService.show('success', 'Visualización Exitosa', response.messages[0]);
+        } else {
+          this.toastService.show(
+            'success',
+            'Visualización Exitosa',
+            'Registro de visualización actualizado.'
+          );
+        }
+        return response.data;
+      }),
+
+      catchError((error) => {
+        const apiErrorResponse = error.error as ApiResponse<any>;
+
+        if (apiErrorResponse && apiErrorResponse.status) {
+          this.toastService.processApiResponse(apiErrorResponse, 'Error al Visualizar Boleta');
+        } else {
+          this.toastService.show(
+            'error',
+            'Fallo de Conexión',
+            'No se pudo registrar la visualización. Verifique su conexión.'
+          );
+        }
         return throwError(() => error);
       })
     );

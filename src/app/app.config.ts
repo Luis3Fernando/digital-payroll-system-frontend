@@ -24,8 +24,10 @@ import {
   heroCog6Tooth,
   heroDocumentArrowDown,
   heroDocumentArrowUp,
+  heroDocumentCheck,
   heroDocumentDuplicate,
   heroDocumentText,
+  heroEye,
   heroHome,
   heroIdentification,
   heroInformationCircle,
@@ -80,7 +82,9 @@ export const appConfig: ApplicationConfig = {
       heroCloudArrowUp,
       heroDocumentArrowUp,
       heroXMark,
-      heroBriefcase
+      heroBriefcase,
+      heroEye,
+      heroDocumentCheck
     }),
   ],
 };
