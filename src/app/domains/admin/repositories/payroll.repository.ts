@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { UploadUsersResponseData } from '../../admin/models/profile.model';
 import { environment } from '@env/environment';
 import { ApiResponse } from '@core/models/api-response.model';
-import { Payslip, PayslipListParams } from '../models/payrolls.model';
+import { MyPayslipListParams, Payslip, PayslipListParams } from '../models/payrolls.model';
 
 @Injectable({
   providedIn: 'root',
@@ -42,5 +42,26 @@ export class PayrollRepository {
   public clearPayslips(): Observable<ApiResponse<any>> {
     const url = `${this.PAYSLIPS_URL}/clear-payslips/`;
     return this.http.delete<ApiResponse<any>>(url);
+  }
+
+  public getMyPayslips(params: MyPayslipListParams): Observable<ApiResponse<Payslip[]>> {
+    const url = `${this.PAYSLIPS_URL}/my-payslips/`;
+
+    let httpParams = new HttpParams();
+
+    if (params.month) {
+      httpParams = httpParams.set('month', params.month.toString());
+    }
+    if (params.year) {
+      httpParams = httpParams.set('year', params.year.toString());
+    }
+    if (params.page) {
+      httpParams = httpParams.set('page', params.page.toString());
+    }
+    if (params.page_size) {
+      httpParams = httpParams.set('page_size', params.page_size.toString());
+    }
+
+    return this.http.get<ApiResponse<Payslip[]>>(url, { params: httpParams });
   }
 }

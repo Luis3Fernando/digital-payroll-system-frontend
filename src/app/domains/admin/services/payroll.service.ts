@@ -4,9 +4,14 @@ import { PayrollRepository } from '../repositories/payroll.repository';
 import { ToastService } from '@shared/services/toast.service';
 import { UploadUsersResponseData } from '../models/profile.model';
 import { ApiPagination, ApiResponse } from '@core/models/api-response.model';
-import { Payslip, PayslipListParams } from '../models/payrolls.model';
+import { MyPayslipListParams, Payslip, PayslipListParams } from '../models/payrolls.model';
 
 export interface PayslipListResponse {
+  payslips: Payslip[];
+  pagination: ApiPagination | null;
+}
+
+export interface MyPayslipListResponse {
   payslips: Payslip[];
   pagination: ApiPagination | null;
 }
@@ -129,6 +134,33 @@ export class PayrollService {
             'error',
             'Fallo de Conexión',
             'No se pudo completar la limpieza masiva. Verifique su conexión.'
+          );
+        }
+
+        return throwError(() => error);
+      })
+    );
+  }
+
+  public getMyPayslips(params: MyPayslipListParams): Observable<MyPayslipListResponse> {
+    return this.payrollRepository.getMyPayslips(params).pipe(
+      map((response) => {
+        return {
+          payslips: response.data,
+          pagination: response.meta.pagination,
+        };
+      }),
+
+      catchError((error) => {
+        const apiErrorResponse = error.error as ApiResponse<any>;
+
+        if (apiErrorResponse && apiErrorResponse.status) {
+          this.toastService.processApiResponse(apiErrorResponse, 'Error al Cargar Mis Boletas');
+        } else {
+          this.toastService.show(
+            'error',
+            'Fallo de Conexión',
+            'No se pudieron obtener sus boletas. Verifique su conexión.'
           );
         }
 

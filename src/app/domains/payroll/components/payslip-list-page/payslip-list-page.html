@@ -55,73 +55,109 @@
         <tr>
           <th class="px-6 py-3">Periodo</th>
           <th class="px-6 py-3">Tipo de Régimen</th>
-          <th class="px-6 py-3">Entidad</th>
-          <th class="px-6 py-3 text-center">Monto Bruto</th>
+          <th class="px-6 py-3">Entidad / Concepto</th>
+          <th class="px-6 py-3 text-center">Monto</th>
           <th class="px-6 py-3 text-center">Estado</th>
-          <th class="px-6 py-3 text-center">Acciones</th>
+          <th class="px-6 py-3 text-center">Acción</th>
         </tr>
       </thead>
+
       <tbody>
         <tr
           *ngFor="let boleta of boletas"
           class="border-b border-gray-300 hover:bg-blue-50 transition-colors duration-150"
         >
-          <td class="px-6 py-3 font-medium">{{ boleta.periodo }}</td>
-          <td class="px-6 py-3">{{ boleta.regimen }}</td>
-          <td class="px-6 py-3">{{ boleta.entidad }}</td>
+          <!-- PERIODO -->
+          <td class="px-6 py-3 font-medium">{{ boleta.issue_date }}</td>
+
+          <!-- TIPO DE RÉGIMEN -->
+          <td class="px-6 py-3">{{ boleta.payroll_type }}</td>
+
+          <!-- ENTIDAD / CONCEPTO -->
+          <td class="px-6 py-3">{{ boleta.data_source }} / {{ boleta.concept }}</td>
+
+          <!-- MONTO -->
           <td class="px-6 py-3 text-center font-semibold text-gray-800">
-            S/ {{ boleta.montoBruto | number : '1.2-2' }}
+            S/ {{ boleta.amount | number : '1.2-2' }}
           </td>
+
+          <!-- ESTADO -->
           <td class="px-6 py-3 text-center">
             <span
               [ngClass]="{
-                'bg-green-100 text-green-700 border-green-300': boleta.estado === 'Descargada',
-                'bg-yellow-100 text-yellow-700 border-yellow-300': boleta.estado === 'Pendiente'
+                'bg-yellow-100 text-yellow-700 border-yellow-300': boleta.view_status === 'unseen',
+                'bg-blue-100 text-blue-700 border-blue-300': boleta.view_status === 'generated',
+                'bg-green-100 text-green-700 border-green-300': boleta.view_status === 'seen'
               }"
               class="px-3 py-1 rounded-full text-xs font-medium border inline-block"
             >
-              {{ boleta.estado }}
+              {{
+                boleta.view_status === 'unseen'
+                  ? 'Pendiente'
+                  : boleta.view_status === 'generated'
+                  ? 'Generada'
+                  : 'Vista'
+              }}
             </span>
           </td>
+
+          <!-- ACCIÓN -->
           <td class="px-6 py-3 text-center">
             <button
               (click)="accionBoleta(boleta)"
               [disabled]="boleta.isLoading"
               [ngClass]="{
+                'bg-yellow-500 hover:bg-yellow-600 text-white':
+                  boleta.view_status === 'unseen' && !boleta.isLoading,
                 'bg-blue-600 hover:bg-blue-700 text-white':
-                  boleta.estado === 'Pendiente' && !boleta.isLoading,
+                  boleta.view_status === 'generated' && !boleta.isLoading,
                 'bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200':
-                  boleta.estado === 'Descargada'
+                  boleta.view_status === 'seen'
               }"
-              class="px-4 py-2 text-white rounded-lg font-medium transition-all duration-150 text-sm flex items-center justify-center gap-2 mx-auto cursor-pointer"
+              class="px-4 py-2 rounded-lg font-medium transition-all duration-150 text-sm flex items-center justify-center gap-2 mx-auto cursor-pointer"
             >
+              <!-- Iconos dinámicos -->
               <ng-icon
-                *ngIf="boleta.isLoading && boleta.estado === 'Pendiente'"
+                *ngIf="boleta.isLoading"
                 name="heroArrowPath"
                 class="w-4 h-4 animate-spin"
               ></ng-icon>
+
               <ng-icon
-                *ngIf="!boleta.isLoading && boleta.estado === 'Pendiente'"
-                name="heroArrowDownTray"
+                *ngIf="!boleta.isLoading && boleta.view_status === 'unseen'"
+                name="heroCog6Tooth"
                 class="w-4 h-4"
               ></ng-icon>
+
               <ng-icon
-                *ngIf="boleta.estado === 'Descargada'"
-                name="heroDocumentArrowDown"
+                *ngIf="!boleta.isLoading && boleta.view_status === 'generated'"
+                name="heroEye"
                 class="w-4 h-4"
               ></ng-icon>
+
+              <ng-icon
+                *ngIf="!boleta.isLoading && boleta.view_status === 'seen'"
+                name="heroDocumentCheck"
+                class="w-4 h-4"
+              ></ng-icon>
+
+              <!-- Texto dinámico -->
               <span>
                 {{
-                  boleta.isLoading && boleta.estado === 'Pendiente'
-                    ? 'Generando...'
-                    : boleta.estado === 'Pendiente'
+                  boleta.isLoading
+                    ? 'Procesando...'
+                    : boleta.view_status === 'unseen'
                     ? 'Generar Boleta'
-                    : 'Descargar Boleta'
+                    : boleta.view_status === 'generated'
+                    ? 'Ver Boleta'
+                    : 'Boleta Vista'
                 }}
               </span>
             </button>
           </td>
         </tr>
+
+        <!-- SIN RESULTADOS -->
         <tr *ngIf="boletas.length === 0">
           <td colspan="6" class="px-6 py-6 text-center text-gray-500 italic">
             No se encontraron boletas para los filtros seleccionados.
