@@ -23,7 +23,19 @@ export class SessionService {
 
   private readonly SESSION_KEY = 'session_data';
 
-  constructor() {}
+  constructor() {
+        this.loadInitialSession();
+  }
+
+  private loadInitialSession(): void {
+    if (this.isBrowser) {
+        const session = this.getSessionFromStorage();
+        if (session) {
+            this.isAuthenticatedSubject.next(true);
+            this.currentUserSubject.next(session.user);
+        }
+    }
+  }
 
   public createSession(response: LoginResponse): void {
     const sessionData: Session = {
