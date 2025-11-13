@@ -3,5 +3,7 @@ export interface User {
   username: string;
   dni: string;
   email: string;
+  last_login: string | Date | null;
+  position: string | null;
   role: 'admin' | 'user' | string;
 }

@@ -11,6 +11,7 @@ import { ApiResponse } from '@core/models/api-response.model';
 export class ProfileUserService {
   private profileRepository = inject(ProfileUserRepository);
   private toastService = inject(ToastService);
+  
   public getMe(): Observable<UserProfileDetails> {
     return this.profileRepository.getMe().pipe(
       map((response) => {

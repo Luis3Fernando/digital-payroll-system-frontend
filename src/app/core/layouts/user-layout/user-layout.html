@@ -67,7 +67,7 @@
       <div class="flex items-center space-x-5">
         <div class="flex items-center gap-2 text-gray-700">
           <ng-icon name="heroUser" class="w-5 h-5 text-gray-600"></ng-icon>
-          <span class="font-medium">Luis Fernando</span>
+          <span class="font-medium">{{profile?.username}}</span>
         </div>
         <button
           (click)="openConfirmLogout()"

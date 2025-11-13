@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { NgIcon } from '@ng-icons/core';
 import { LoadingButton } from '../../../shared/components/loading-button/loading-button';
 import { AuthService } from '@domains/auth/services/auth.service';
-import { ToastService } from '@shared/services/toast.service';
 import { finalize } from 'rxjs';
+import { SessionService } from '@domains/auth/services/session.service';
+import { User } from '@domains/auth/models/user.model';
 
 @Component({
   selector: 'app-user-layout',
@@ -13,13 +14,19 @@ import { finalize } from 'rxjs';
   templateUrl: './user-layout.html',
   styles: ``,
 })
-export class UserLayout {
+export class UserLayout implements OnInit {
   private authService = inject(AuthService);
-  private toastService = inject(ToastService);
+  private SessionService = inject(SessionService); 
+
+  profile!: User | null;
 
   sidebarOpen: boolean = true;
   confirmLogoutOpen: boolean = false;
   loadingLogout: boolean = false;
+
+  ngOnInit(): void {
+    this.profile = this.SessionService.getCurrentUser();
+  }
 
   toggleSidebar() {
     this.sidebarOpen = !this.sidebarOpen;

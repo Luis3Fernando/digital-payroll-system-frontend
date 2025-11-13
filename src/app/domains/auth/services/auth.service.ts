@@ -1,11 +1,9 @@
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, tap, catchError, of, map, throwError } from 'rxjs';
+import { Observable, tap, catchError, of, map, throwError } from 'rxjs';
 
 import { AuthRepository } from '@auth/repositories/auth.repository';
 import { LoginRequest, LogoutRequest } from '@auth/models/auth-request.model';
-import { LoginResponse } from '@auth/models/auth-response.model';
-import { User } from '@auth/models/user.model';
 import { isPlatformBrowser } from '@angular/common';
 import { APP_ROLES } from '@shared/utils/roles';
 import { ToastService } from '@shared/services/toast.service';
@@ -28,6 +26,7 @@ export class AuthService {
       tap((apiResponse) => {
         const responseData = apiResponse.data;
         if (responseData) {
+          console.log(responseData)
           this.sessionService.createSession(apiResponse.data);
 
           const redirectUrl =
