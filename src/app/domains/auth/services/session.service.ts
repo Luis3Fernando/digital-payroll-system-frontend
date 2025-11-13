@@ -24,16 +24,16 @@ export class SessionService {
   private readonly SESSION_KEY = 'session_data';
 
   constructor() {
-        this.loadInitialSession();
+    this.loadInitialSession();
   }
 
   private loadInitialSession(): void {
     if (this.isBrowser) {
-        const session = this.getSessionFromStorage();
-        if (session) {
-            this.isAuthenticatedSubject.next(true);
-            this.currentUserSubject.next(session.user);
-        }
+      const session = this.getSessionFromStorage();
+      if (session) {
+        this.isAuthenticatedSubject.next(true);
+        this.currentUserSubject.next(session.user);
+      }
     }
   }
 
@@ -112,5 +112,15 @@ export class SessionService {
 
   public notifyTokenRefreshed(success: boolean): void {
     this.accessTokenRefreshedSubject.next(success);
+  }
+
+  public updateUser(updatedUser: User): void {
+    const session = this.getSessionFromStorage();
+
+    if (session) {
+      session.user = updatedUser;
+      this.setSessionToStorage(session);
+      this.currentUserSubject.next(updatedUser);
+    }
   }
 }

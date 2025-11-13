@@ -33,3 +33,11 @@ export interface UserProfileDetails {
   is_active: boolean;
   work_details: WorkDetails | null;
 }
+
+export interface UpdateEmailRequest {
+  email: string;
+}
+
+export interface UpdateEmailData {
+  email: string;
+}

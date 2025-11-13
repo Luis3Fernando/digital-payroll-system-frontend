@@ -41,6 +41,7 @@ import {
   heroUserPlus,
   heroUsers,
   heroXMark,
+  heroPencilSquare
 } from '@ng-icons/heroicons/outline';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideToastr } from 'ngx-toastr';
@@ -84,7 +85,8 @@ export const appConfig: ApplicationConfig = {
       heroXMark,
       heroBriefcase,
       heroEye,
-      heroDocumentCheck
+      heroDocumentCheck,
+      heroPencilSquare
     }),
   ],
 };

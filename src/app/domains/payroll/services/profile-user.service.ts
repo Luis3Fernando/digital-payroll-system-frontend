@@ -1,9 +1,10 @@
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 import { ProfileUserRepository } from '../repositories/profile-user.repository';
 import { ToastService } from '@shared/services/toast.service';
-import { UserProfileDetails } from '../models/profile-user.model';
+import { UpdateEmailData, UpdateEmailRequest, UserProfileDetails } from '../models/profile-user.model';
 import { ApiResponse } from '@core/models/api-response.model';
+import { SessionService } from '@domains/auth/services/session.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,8 @@ import { ApiResponse } from '@core/models/api-response.model';
 export class ProfileUserService {
   private profileRepository = inject(ProfileUserRepository);
   private toastService = inject(ToastService);
-  
+  private sessionService = inject(SessionService);
+
   public getMe(): Observable<UserProfileDetails> {
     return this.profileRepository.getMe().pipe(
       map((response) => {
@@ -28,6 +30,38 @@ export class ProfileUserService {
             'error',
             'Fallo de Conexión',
             'No se pudo obtener su información de perfil. Verifique su conexión.'
+          );
+        }
+
+        return throwError(() => error);
+      })
+    );
+  }
+
+  public updateEmail(request: UpdateEmailRequest): Observable<UpdateEmailData> {
+    return this.profileRepository.updateEmail(request).pipe(
+      tap((apiResponse) => {
+        this.toastService.processApiResponse(apiResponse, 'Actualización Exitosa');
+        const newEmail = apiResponse.data.email;
+        const currentUser = this.sessionService.getCurrentUser();
+
+        if (currentUser) {
+          const updatedUser = { ...currentUser, email: newEmail };
+          this.sessionService.updateUser(updatedUser);
+        }
+      }),
+      map((response) => response.data),
+
+      catchError((error) => {
+        const apiErrorResponse = error.error as ApiResponse<any>;
+
+        if (apiErrorResponse && apiErrorResponse.status) {
+          this.toastService.processApiResponse(apiErrorResponse, 'Error al Actualizar Correo');
+        } else {
+          this.toastService.show(
+            'error',
+            'Fallo en la Actualización',
+            'Ocurrió un error inesperado. Intente nuevamente.'
           );
         }
 
