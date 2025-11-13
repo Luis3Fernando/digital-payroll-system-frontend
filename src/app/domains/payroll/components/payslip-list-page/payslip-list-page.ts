@@ -84,7 +84,7 @@ export class PayslipListPage implements OnInit {
     if (boleta.view_status === 'unseen') {
       this.payrollService.generatePayslip(boleta.id).subscribe({
         next: (res) => {
-          boleta.view_status = res.view_status; // 'generated'
+          boleta.view_status = res.view_status;
           boleta['pdf_url'] = res.pdf_url;
         },
         error: () => {},
