@@ -36,7 +36,6 @@
           {{ userProfile?.last_name }}
         </p>
       </div>
-
       <div>
         <p class="text-sm font-medium text-gray-500 mb-1">Cargo</p>
         <p
@@ -45,106 +44,35 @@
           {{ userProfile?.position }}
         </p>
       </div>
-
-      <!-- Descripción de cargo -->
       <div>
         <p class="text-sm font-medium text-gray-500 mb-1">Descripción del cargo</p>
         <p class="text-gray-800 bg-gray-100 border border-gray-200 rounded-lg px-4 py-2">
           {{ userProfile?.description || 'No disponible' }}
         </p>
       </div>
-
-      <!-- Fecha de ingreso -->
       <div>
         <p class="text-sm font-medium text-gray-500 mb-1">Fecha de ingreso</p>
         <p class="text-gray-800 bg-gray-100 border border-gray-200 rounded-lg px-4 py-2">
           {{ userProfile?.start_date | date : 'dd/MM/yyyy' }}
         </p>
       </div>
-
-      <!-- Fecha de finalización -->
       <div>
         <p class="text-sm font-medium text-gray-500 mb-1">Fecha de finalización</p>
         <p class="text-gray-800 bg-gray-100 border border-gray-200 rounded-lg px-4 py-2">
           {{ userProfile?.end_date ? (userProfile?.end_date | date : 'dd/MM/yyyy') : 'Vigente' }}
         </p>
       </div>
-
-      <!-- Régimen -->
       <div>
         <p class="text-sm font-medium text-gray-500 mb-1">Régimen</p>
         <p class="text-gray-800 bg-gray-100 border border-gray-200 rounded-lg px-4 py-2">
           {{ userProfile?.regimen || 'No disponible' }}
         </p>
       </div>
-
-      <!-- Categoría -->
       <div>
         <p class="text-sm font-medium text-gray-500 mb-1">Categoría</p>
         <p class="text-gray-800 bg-gray-100 border border-gray-200 rounded-lg px-4 py-2">
           {{ userProfile?.category || 'No disponible' }}
         </p>
-      </div>
-
-      <!-- Detalles de empleo -->
-      <div class="md:col-span-2">
-        <h4 class="text-md font-semibold text-gray-700 mt-4 mb-2">Detalles de empleo</h4>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          <div>
-            <p class="text-sm font-medium text-gray-500 mb-1">Días trabajados</p>
-            <p class="text-gray-800 bg-gray-100 border border-gray-200 rounded-lg px-4 py-2">
-              {{ userProfile?.work_details?.worked_days || 0 }}
-            </p>
-          </div>
-          <div>
-            <p class="text-sm font-medium text-gray-500 mb-1">Días no trabajados</p>
-            <p class="text-gray-800 bg-gray-100 border border-gray-200 rounded-lg px-4 py-2">
-              {{ userProfile?.work_details?.non_worked_days || 0 }}
-            </p>
-          </div>
-          <div>
-            <p class="text-sm font-medium text-gray-500 mb-1">Horas trabajadas</p>
-            <p class="text-gray-800 bg-gray-100 border border-gray-200 rounded-lg px-4 py-2">
-              {{ userProfile?.work_details?.worked_hours || 0 }}
-            </p>
-          </div>
-          <div>
-            <p class="text-sm font-medium text-gray-500 mb-1">Descuento por horas académicas</p>
-            <p class="text-gray-800 bg-gray-100 border border-gray-200 rounded-lg px-4 py-2">
-              {{ userProfile?.work_details?.discount_academic_hours || 0 }}
-            </p>
-          </div>
-          <div>
-            <p class="text-sm font-medium text-gray-500 mb-1">Descuento por tardanzas</p>
-            <p class="text-gray-800 bg-gray-100 border border-gray-200 rounded-lg px-4 py-2">
-              {{ userProfile?.work_details?.discount_lateness || 0 }}
-            </p>
-          </div>
-          <div>
-            <p class="text-sm font-medium text-gray-500 mb-1">Permiso personal</p>
-            <p class="text-gray-800 bg-gray-100 border border-gray-200 rounded-lg px-4 py-2">
-              {{ userProfile?.work_details?.personal_leave_hours || 0 }}
-            </p>
-          </div>
-          <div>
-            <p class="text-sm font-medium text-gray-500 mb-1">Descuento domingo</p>
-            <p class="text-gray-800 bg-gray-100 border border-gray-200 rounded-lg px-4 py-2">
-              {{ userProfile?.work_details?.sunday_discount || 0 }}
-            </p>
-          </div>
-          <div>
-            <p class="text-sm font-medium text-gray-500 mb-1">Días de vacaciones</p>
-            <p class="text-gray-800 bg-gray-100 border border-gray-200 rounded-lg px-4 py-2">
-              {{ userProfile?.work_details?.vacation_days || 0 }}
-            </p>
-          </div>
-          <div>
-            <p class="text-sm font-medium text-gray-500 mb-1">Horas de vacaciones</p>
-            <p class="text-gray-800 bg-gray-100 border border-gray-200 rounded-lg px-4 py-2">
-              {{ userProfile?.work_details?.vacation_hours || 0 }}
-            </p>
-          </div>
-        </div>
       </div>
     </div>
   </div>
