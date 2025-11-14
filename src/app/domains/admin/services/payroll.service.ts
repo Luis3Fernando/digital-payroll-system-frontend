@@ -1,10 +1,10 @@
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 import { PayrollRepository } from '../repositories/payroll.repository';
 import { ToastService } from '@shared/services/toast.service';
 import { UploadUsersResponseData } from '../models/profile.model';
 import { ApiPagination, ApiResponse } from '@core/models/api-response.model';
-import { MyPayslipListParams, Payslip, PayslipListParams } from '../models/payrolls.model';
+import { DeletePayslipRequest, MyPayslipListParams, Payslip, PayslipListParams } from '../models/payrolls.model';
 import { PayslipGenerationData, PayslipViewData } from '../models/generate-pdf.model';
 
 export interface PayslipListResponse {
@@ -229,6 +229,38 @@ export class PayrollService {
             'No se pudo registrar la visualización. Verifique su conexión.'
           );
         }
+        return throwError(() => error);
+      })
+    );
+  }
+
+  public deletePayslip(id: string): Observable<null> {
+    if (!id) {
+        this.toastService.show('error', 'Error de Parámetro', 'ID de boleta no proporcionado.');
+        return throwError(() => new Error('Payslip ID is required'));
+    }
+
+    const request: DeletePayslipRequest = { id };
+
+    return this.payrollRepository.deletePayslip(request).pipe(
+      tap((apiResponse) => {
+        this.toastService.processApiResponse(apiResponse, 'Eliminación Exitosa');
+      }),
+      map(() => null), 
+      catchError((error) => {
+        const apiErrorResponse = error.error as ApiResponse<any>;
+        const defaultTitle = 'Error al Eliminar Boleta';
+
+        if (apiErrorResponse && apiErrorResponse.status) {
+          this.toastService.processApiResponse(apiErrorResponse, defaultTitle);
+        } else {
+          this.toastService.show(
+            'error',
+            'Fallo de Conexión',
+            'No se pudo completar la eliminación. Verifique su conexión.'
+          );
+        }
+
         return throwError(() => error);
       })
     );

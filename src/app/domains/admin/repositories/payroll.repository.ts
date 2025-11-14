@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { UploadUsersResponseData } from '../../admin/models/profile.model';
 import { environment } from '@env/environment';
 import { ApiResponse } from '@core/models/api-response.model';
-import { MyPayslipListParams, Payslip, PayslipListParams } from '../models/payrolls.model';
+import { DeletePayslipRequest, MyPayslipListParams, Payslip, PayslipListParams } from '../models/payrolls.model';
 import { PayslipGenerationData, PayslipViewData } from '../models/generate-pdf.model';
 
 @Injectable({
@@ -80,5 +80,10 @@ export class PayrollRepository {
     httpParams = httpParams.set('id', id);
 
     return this.http.get<ApiResponse<PayslipViewData>>(url, { params: httpParams });
+  }
+
+  public deletePayslip(request: DeletePayslipRequest): Observable<ApiResponse<null>> {
+    const url = `${this.PAYSLIPS_URL}/delete-payslip/`;
+    return this.http.delete<ApiResponse<null>>(url, { body: request });
   }
 }

@@ -40,11 +40,11 @@
             <th class="px-3 py-3 font-semibold w-[50px]">#</th>
             <th class="px-6 py-3 font-semibold">DNI</th>
             <th class="px-6 py-3 font-semibold">Concepto</th>
-            <th class="px-6 py-3 font-semibold">Monto</th>
+            <th class="px-6 py-3 font-semibold">Período</th>
             <th class="px-6 py-3 font-semibold text-center">Estado</th>
+            <th class="px-6 py-3 font-semibold text-center">Opciones</th>
           </tr>
         </thead>
-
         <tbody class="divide-y divide-gray-200">
           <tr
             *ngFor="let boleta of payslips; let i = index"
@@ -53,11 +53,9 @@
             <td class="px-3 py-4 text-center font-medium w-[50px]">
               {{ (currentPage - 1) * pageSize + i + 1 }}
             </td>
-
             <td class="px-6 py-4">{{ boleta.profile_dni }}</td>
             <td class="px-6 py-4">{{ boleta.concept }}</td>
-            <td class="px-6 py-4">s/. {{ boleta.amount }}</td>
-
+            <td class="px-6 py-4">{{ boleta.issue_date | date : 'MMM yyyy' }}</td>
             <td class="px-6 py-4 text-center">
               <span
                 class="px-3 py-1 rounded-full text-xs font-medium"
@@ -76,6 +74,20 @@
                 }}
               </span>
             </td>
+            <td class="px-6 py-4 text-center">
+              <button
+                (click)="openDeletePayslipModal(boleta)"
+                [disabled]="boleta.isDeleting || isLoading"
+                class="text-red-600 hover:text-red-800 p-2 rounded-full hover:bg-red-50 transition disabled:opacity-50 relative"
+              >
+                <ng-icon *ngIf="!boleta.isDeleting" name="heroTrash" size="18"></ng-icon>
+                <ng-icon
+                  *ngIf="boleta.isDeleting"
+                  name="heroArrowPath"
+                  class="w-4 h-4 text-red-600 animate-spin"
+                ></ng-icon>
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -84,7 +96,6 @@
       <p>No se encontraron boletas para los filtros seleccionados.</p>
     </div>
   </div>
-
   <div
     *ngIf="paginationMeta && paginationMeta.total_items > 0"
     class="flex items-center justify-between pt-4 border-t border-gray-200"
@@ -93,7 +104,6 @@
       Total de resultados:
       <span class="font-semibold">{{ paginationMeta.total_items | number }}</span>
     </p>
-
     <div class="flex items-center gap-2">
       <button
         class="p-2 rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
@@ -102,7 +112,6 @@
       >
         <ng-icon name="heroChevronLeft" size="20"></ng-icon>
       </button>
-
       <ng-container *ngFor="let page of pageRange">
         <button
           *ngIf="page !== '...'"
@@ -118,6 +127,7 @@
         </button>
         <span *ngIf="page === '...'" class="px-3 py-1 text-gray-500 select-none">...</span>
       </ng-container>
+
       <button
         class="p-2 rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
         [disabled]="!paginationMeta.has_next || isLoading"
@@ -209,7 +219,7 @@
 >
   <div class="bg-white rounded-lg shadow-lg max-w-sm w-full p-6 text-center">
     <h2 class="text-lg font-semibold text-gray-800 mb-4">
-      ¿Estás seguro que deseas cerrar sesión?
+      ¿Estás seguro que deseas eliminar todas las boletas?
     </h2>
     <div class="flex justify-center gap-4">
       <button
@@ -226,6 +236,42 @@
         (click)="confirmClearPayslips()"
       >
       </app-loading-button>
+    </div>
+  </div>
+</div>
+<div
+  *ngIf="deletePayslipModalOpen"
+  class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+>
+  <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 relative">
+    <div class="flex flex-col items-center">
+      <ng-icon name="heroExclamationTriangle" class="w-12 h-12 text-red-500 mb-4"></ng-icon> 
+      <h2 class="text-xl font-bold text-gray-800 mb-2 text-center">
+        Confirmar Eliminación
+      </h2>
+      <p class="text-gray-600 text-center mb-4">
+        Estás a punto de eliminar la siguiente boleta. Esta acción es irreversible.
+      </p>
+      <div *ngIf="payslipToDelete" class="bg-red-50 p-4 rounded-lg w-full mb-6 border border-red-200 text-left">
+        <p class="text-sm font-semibold text-red-700">DNI: {{ payslipToDelete.profile_dni }}</p>
+        <p class="text-sm text-red-600">Concepto: {{ payslipToDelete.concept }}</p>
+        <p class="text-sm text-red-600">Período: {{ payslipToDelete.issue_date | date: 'MMM yyyy' }}</p>
+      </div>
+    </div>
+    <div class="flex justify-center gap-4">
+      <button
+        (click)="closeDeletePayslipModal()"
+        [disabled]="isClearingPayslips"
+        class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition disabled:opacity-50"
+      >
+        Cancelar
+      </button>
+      <app-loading-button
+        [text]="'Sí, Eliminar'"
+        [loading]="isClearingPayslips" 
+        (click)="confirmDeletePayslip()"
+        type="button"
+      ></app-loading-button>
     </div>
   </div>
 </div>

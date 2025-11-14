@@ -11,6 +11,7 @@ export interface Payslip {
   data_type: string;
   position_order: number;
   isLoading?: boolean;
+  isDeleting?: boolean;
   pdf_url?: string;
 }
 
@@ -26,4 +27,8 @@ export interface MyPayslipListParams {
   year?: number;
   page?: number;
   page_size?: number;
+}
+
+export interface DeletePayslipRequest {
+  id: string;
 }

@@ -36,6 +36,9 @@ export class BoletaManagementPage {
   clearPayslipsModalOpen = false;
   isClearingPayslips = false;
 
+  public deletePayslipModalOpen = false;
+  public payslipToDelete: Payslip | null = null;
+
   constructor() {}
 
   ngOnInit(): void {
@@ -168,7 +171,7 @@ export class BoletaManagementPage {
       next: () => {
         this.closeUploadBoletasModal();
         this.selectedBoletasFile = null;
-        this.loadPayslips(); // recargar lista al subir
+        this.loadPayslips();
       },
       error: () => (this.isUploadingBoletas = false),
       complete: () => (this.isUploadingBoletas = false),
@@ -194,5 +197,35 @@ export class BoletaManagementPage {
       error: () => (this.isClearingPayslips = false),
       complete: () => (this.isClearingPayslips = false),
     });
+  }
+
+  openDeletePayslipModal(boleta: Payslip): void {
+    this.payslipToDelete = boleta;
+    this.deletePayslipModalOpen = true;
+  }
+
+  confirmDeletePayslip(): void {
+    if (!this.payslipToDelete) return;
+    this.isClearingPayslips = true;
+
+    const payslipId = this.payslipToDelete.id;
+
+    this.payrollService.deletePayslip(payslipId).subscribe({
+      next: () => {
+        this.loadPayslips();
+        this.deletePayslipModalOpen = false;
+      },
+      error: () => {
+      },
+      complete: () => {
+        this.isClearingPayslips = false;
+        this.payslipToDelete = null;
+      },
+    });
+  }
+
+  closeDeletePayslipModal(): void {
+    this.deletePayslipModalOpen = false;
+    this.payslipToDelete = null;
   }
 }
