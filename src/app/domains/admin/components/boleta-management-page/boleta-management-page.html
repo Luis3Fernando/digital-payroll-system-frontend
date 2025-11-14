@@ -191,18 +191,63 @@
               </span>
             </td>
             <td class="px-6 py-4 text-center">
-              <button
-                (click)="openDeletePayslipModal(boleta)"
-                [disabled]="boleta.isDeleting || isLoading"
-                class="text-red-600 hover:text-red-800 p-2 rounded-full hover:bg-red-50 transition disabled:opacity-50 relative"
-              >
-                <ng-icon *ngIf="!boleta.isDeleting" name="heroTrash" size="18"></ng-icon>
-                <ng-icon
-                  *ngIf="boleta.isDeleting"
-                  name="heroArrowPath"
-                  class="w-4 h-4 text-red-600 animate-spin"
-                ></ng-icon>
-              </button>
+              <div class="flex items-center justify-center gap-2">
+                <button
+                  (click)="accionBoleta(boleta)"
+                  [disabled]="
+                    boleta.isLoading || (boleta.view_status === 'seen' && !boleta.pdf_url)
+                  "
+                  [ngClass]="{
+                    'bg-yellow-500 hover:bg-yellow-600 text-white':
+                      boleta.view_status === 'unseen' && !boleta.isLoading,
+                    'bg-blue-600 hover:bg-blue-700 text-white':
+                      (boleta.view_status === 'generated' || boleta.view_status === 'seen') &&
+                      !boleta.isLoading,
+                    'bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200':
+                      boleta.view_status === 'seen' && !boleta.pdf_url
+                  }"
+                  class="px-3 py-2 rounded-lg font-medium transition-all duration-150 text-xs flex items-center justify-center gap-1 cursor-pointer"
+                  title="{{ boleta.view_status === 'unseen' ? 'Generar documento' : 'Ver PDF' }}"
+                >
+                  <ng-icon
+                    *ngIf="boleta.isLoading"
+                    name="heroArrowPath"
+                    class="w-4 h-4 animate-spin"
+                  ></ng-icon>
+
+                  <ng-icon
+                    *ngIf="
+                      !boleta.isLoading &&
+                      (boleta.view_status === 'generated' || boleta.view_status === 'seen')
+                    "
+                    name="heroEye"
+                    class="w-4 h-4"
+                  ></ng-icon>
+                  <ng-icon
+                    *ngIf="!boleta.isLoading && boleta.view_status === 'unseen'"
+                    name="heroCog6Tooth"
+                    class="w-4 h-4"
+                  ></ng-icon>
+
+                  <span>
+                    {{ boleta.view_status === 'unseen' ? 'Generar' : 'Ver' }}
+                  </span>
+                </button>
+
+                <button
+                  (click)="openDeletePayslipModal(boleta)"
+                  [disabled]="boleta.isDeleting || isLoading"
+                  class="text-red-600 hover:text-red-800 p-2 rounded-full hover:bg-red-50 transition disabled:opacity-50 relative"
+                  title="Eliminar boleta"
+                >
+                  <ng-icon *ngIf="!boleta.isDeleting" name="heroTrash" size="18"></ng-icon>
+                  <ng-icon
+                    *ngIf="boleta.isDeleting"
+                    name="heroArrowPath"
+                    class="w-4 h-4 text-red-600 animate-spin"
+                  ></ng-icon>
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>

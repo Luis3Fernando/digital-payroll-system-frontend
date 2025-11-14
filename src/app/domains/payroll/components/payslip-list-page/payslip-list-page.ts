@@ -5,7 +5,6 @@ import { MyPayslipListParams, Payslip } from '@domains/admin/models/payrolls.mod
 import { PayrollService } from '@domains/admin/services/payroll.service';
 import { NgIcon } from '@ng-icons/core';
 import { ToastService } from '@shared/services/toast.service';
-import { delay, of } from 'rxjs';
 
 @Component({
   selector: 'app-payslip-list-page',
@@ -70,11 +69,6 @@ export class PayslipListPage implements OnInit {
     this.selectedYear = '';
     this.selectedMonth = '';
     this.buscarBoletas();
-  }
-
-  private obtenerMesNumero(nombre: string): string {
-    const mes = this.months.find((m) => m.label.toLowerCase() === nombre.toLowerCase());
-    return mes ? mes.value : '';
   }
 
   private openPdf(url: string, boletaId: string): void {

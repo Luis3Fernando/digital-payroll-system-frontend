@@ -279,4 +279,52 @@ export class BoletaManagementPage {
     this.currentPage = 1;
     this.loadPayslips();
   }
+
+  private openPdf(url: string, boletaId: string): void {
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.download = `Boleta_${boletaId}.pdf`;
+    link.click();
+  }
+
+  accionBoleta(boleta: Payslip) {
+    if (boleta.isLoading) return;
+    boleta.isLoading = true;
+
+    if (boleta.view_status === 'seen' && boleta.pdf_url) {
+      this.openPdf(boleta.pdf_url, boleta.id);
+      boleta.isLoading = false;
+      console.log('Entro a la accionBoleta', boleta);
+
+      return;
+    }
+
+    if (boleta.view_status === 'unseen') {
+      this.payrollService.generatePayslip(boleta.id).subscribe({
+        next: (res) => {
+          boleta.view_status = res.view_status;
+          boleta['pdf_url'] = res.pdf_url;
+        },
+        error: () => {},
+        complete: () => {
+          boleta.isLoading = false;
+        },
+      });
+    } else if (boleta.view_status === 'generated') {
+      this.payrollService.viewPayslip(boleta.id).subscribe({
+        next: (res) => {
+          boleta.view_status = res.status;
+          boleta['pdf_url'] = res.pdf_url;
+          if (boleta.pdf_url) {
+            this.openPdf(boleta.pdf_url, boleta.id);
+          }
+        },
+        error: () => {},
+        complete: () => {
+          boleta.isLoading = false;
+        },
+      });
+    }
+  }
 }
