@@ -2,7 +2,7 @@ import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 import { ProfileUserRepository } from '../repositories/profile-user.repository';
 import { ToastService } from '@shared/services/toast.service';
-import { UpdateEmailData, UpdateEmailRequest, UserProfileDetails } from '../models/profile-user.model';
+import { ChangePasswordRequest, UpdateEmailData, UpdateEmailRequest, UserProfileDetails } from '../models/profile-user.model';
 import { ApiResponse } from '@core/models/api-response.model';
 import { SessionService } from '@domains/auth/services/session.service';
 
@@ -65,6 +65,31 @@ export class ProfileUserService {
           );
         }
 
+        return throwError(() => error);
+      })
+    );
+  }
+
+  public changePassword(request: ChangePasswordRequest): Observable<null> {
+    return this.profileRepository.changePassword(request).pipe(
+      tap((apiResponse) => {
+        this.toastService.processApiResponse(apiResponse, 'Contraseña Actualizada');
+      }),
+      
+      map(() => null), 
+      catchError((error) => {
+        const apiErrorResponse = error.error as ApiResponse<any>;
+        const defaultTitle = 'Error al Cambiar Contraseña';
+
+        if (apiErrorResponse && apiErrorResponse.status) {
+          this.toastService.processApiResponse(apiErrorResponse, defaultTitle);
+        } else {
+          this.toastService.show(
+            'error',
+            defaultTitle,
+            'No se pudo conectar con el servidor o la respuesta no fue válida.'
+          );
+        }
         return throwError(() => error);
       })
     );

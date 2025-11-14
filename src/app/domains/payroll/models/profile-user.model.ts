@@ -41,3 +41,8 @@ export interface UpdateEmailRequest {
 export interface UpdateEmailData {
   email: string;
 }
+
+export interface ChangePasswordRequest {
+  current_password: string;
+  new_password: string;
+}

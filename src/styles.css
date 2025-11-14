@@ -1,5 +1,5 @@
 @import 'tailwindcss';
 
 input {
-  @apply text-gray-900 placeholder-gray-500;
+  @apply placeholder-gray-500;
 }
