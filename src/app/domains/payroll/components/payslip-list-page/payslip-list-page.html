@@ -102,14 +102,15 @@
             <td class="px-6 py-3 text-center">
               <button
                 (click)="accionBoleta(boleta)"
-                [disabled]="boleta.isLoading || boleta.view_status === 'seen'"
+                [disabled]="boleta.isLoading || (boleta.view_status === 'seen' && !boleta.pdf_url)"
                 [ngClass]="{
                   'bg-yellow-500 hover:bg-yellow-600 text-white':
                     boleta.view_status === 'unseen' && !boleta.isLoading,
                   'bg-blue-600 hover:bg-blue-700 text-white':
-                    boleta.view_status === 'generated' && !boleta.isLoading,
+                    (boleta.view_status === 'generated' || boleta.view_status === 'seen') &&
+                    !boleta.isLoading,
                   'bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200':
-                    boleta.view_status === 'seen'
+                    boleta.view_status === 'seen' && !boleta.pdf_url
                 }"
                 class="px-4 py-2 rounded-lg font-medium transition-all duration-150 text-sm flex items-center justify-center gap-2 mx-auto cursor-pointer"
               >
@@ -118,30 +119,29 @@
                   name="heroArrowPath"
                   class="w-4 h-4 animate-spin"
                 ></ng-icon>
+
+                <ng-icon
+                  *ngIf="
+                    !boleta.isLoading &&
+                    (boleta.view_status === 'generated' || boleta.view_status === 'seen')
+                  "
+                  name="heroEye"
+                  class="w-4 h-4"
+                ></ng-icon>
+
                 <ng-icon
                   *ngIf="!boleta.isLoading && boleta.view_status === 'unseen'"
                   name="heroCog6Tooth"
                   class="w-4 h-4"
                 ></ng-icon>
-                <ng-icon
-                  *ngIf="!boleta.isLoading && boleta.view_status === 'generated'"
-                  name="heroEye"
-                  class="w-4 h-4"
-                ></ng-icon>
-                <ng-icon
-                  *ngIf="!boleta.isLoading && boleta.view_status === 'seen'"
-                  name="heroDocumentCheck"
-                  class="w-4 h-4"
-                ></ng-icon>
+
                 <span>
                   {{
                     boleta.isLoading
                       ? 'Procesando...'
                       : boleta.view_status === 'unseen'
                       ? 'Generar Boleta'
-                      : boleta.view_status === 'generated'
-                      ? 'Ver Boleta'
-                      : 'Boleta Vista'
+                      : 'Ver Boleta' // Usamos 'Ver Boleta' para 'generated' y 'seen'
                   }}
                 </span>
               </button>
