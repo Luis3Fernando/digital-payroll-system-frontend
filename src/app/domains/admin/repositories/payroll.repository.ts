@@ -4,7 +4,12 @@ import { Observable } from 'rxjs';
 import { UploadUsersResponseData } from '../../admin/models/profile.model';
 import { environment } from '@env/environment';
 import { ApiResponse } from '@core/models/api-response.model';
-import { DeletePayslipRequest, MyPayslipListParams, Payslip, PayslipListParams } from '../models/payrolls.model';
+import {
+  DeletePayslipRequest,
+  MyPayslipListParams,
+  Payslip,
+  PayslipListParams,
+} from '../models/payrolls.model';
 import { PayslipGenerationData, PayslipViewData } from '../models/generate-pdf.model';
 
 @Injectable({
@@ -27,15 +32,23 @@ export class PayrollRepository {
 
     let httpParams = new HttpParams();
 
-    if (params.page) {
-      httpParams = httpParams.set('page', params.page.toString());
-    }
-    if (params.page_size) {
-      httpParams = httpParams.set('page_size', params.page_size.toString());
-    }
-    if (params.issue_date) {
-      httpParams = httpParams.set('issue_date', params.issue_date);
-    }
+    const appendParam = (key: keyof PayslipListParams, value: any) => {
+      if (value !== undefined && value !== null && value !== '') {
+        httpParams = httpParams.set(key as string, value.toString());
+      }
+    };
+
+    appendParam('page', params.page);
+    appendParam('page_size', params.page_size);
+    appendParam('search', params.search);
+    appendParam('issue_date', params.issue_date);
+
+    appendParam('dni', params.dni);
+    appendParam('name', params.name);
+    appendParam('concept', params.concept);
+    appendParam('status', params.status);
+    appendParam('month', params.month);
+    appendParam('year', params.year);
 
     return this.http.get<ApiResponse<Payslip[]>>(url, { params: httpParams });
   }

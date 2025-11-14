@@ -3,6 +3,7 @@ export interface Payslip {
   profile_id: string;
   profile_dni: string;
   issue_date: string;
+  full_name: string;
   view_status: 'seen' | 'unseen' | 'generated';
   concept: string;
   amount: number;
@@ -18,8 +19,14 @@ export interface Payslip {
 export interface PayslipListParams {
   page?: number;
   page_size?: number;
-  search?: string;
+  search?: string; 
   issue_date?: string;
+  dni?: string;
+  name?: string; 
+  concept?: string;
+  status?: 'seen' | 'unseen' | 'generated';
+  month?: number;
+  year?: number;
 }
 
 export interface MyPayslipListParams {

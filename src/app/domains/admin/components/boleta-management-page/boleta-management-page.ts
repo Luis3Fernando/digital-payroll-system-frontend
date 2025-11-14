@@ -39,12 +39,41 @@ export class BoletaManagementPage {
   public deletePayslipModalOpen = false;
   public payslipToDelete: Payslip | null = null;
 
-  constructor() {}
+  public filterDni: string = '';
+  public filterName: string = '';
+  public filterConcept: string = '';
+  public filterStatus: 'seen' | 'unseen' | 'generated' | '' = '';
+  public filterMonth: number | '' = '';
+  public filterYear: number | '' = '';
+
+  public years: number[] = [];
+  public months = [
+    { value: 1, label: 'Enero' },
+    { value: 2, label: 'Febrero' },
+    { value: 3, label: 'Marzo' },
+    { value: 4, label: 'Abril' },
+    { value: 5, label: 'Mayo' },
+    { value: 6, label: 'Junio' },
+    { value: 7, label: 'Juio' },
+    { value: 8, label: 'Agosto' },
+    { value: 9, label: 'Septiembre' },
+    { value: 10, label: 'Octubre' },
+    { value: 11, label: 'Noviembre' },
+    { value: 12, label: 'Diciembre' },
+  ];
+
+  constructor() {
+    const currentYear = new Date().getFullYear();
+    const startYear = 2015;
+
+    for (let year = currentYear; year >= startYear; year--) {
+      this.years.push(year);
+    }
+  }
 
   ngOnInit(): void {
     this.loadPayslips();
     this.searchSubject.pipe(debounceTime(400)).subscribe((term) => {
-      this.currentSearchTerm = term;
       this.currentPage = 1;
       this.loadPayslips();
     });
@@ -54,12 +83,19 @@ export class BoletaManagementPage {
     this.searchSubject.next(this.currentSearchTerm.trim());
   }
 
-  loadPayslips(): void {
+  public loadPayslips(): void {
     this.isLoading = true;
 
     const params: PayslipListParams = {
       page: this.currentPage,
       page_size: this.pageSize,
+
+      dni: this.filterDni || undefined,
+      name: this.filterName || undefined,
+      concept: this.filterConcept || undefined,
+      status: this.filterStatus || undefined,
+      month: this.filterMonth || undefined,
+      year: this.filterYear || undefined,
     };
 
     this.payrollService.listPayslips(params).subscribe({
@@ -215,8 +251,7 @@ export class BoletaManagementPage {
         this.loadPayslips();
         this.deletePayslipModalOpen = false;
       },
-      error: () => {
-      },
+      error: () => {},
       complete: () => {
         this.isClearingPayslips = false;
         this.payslipToDelete = null;
@@ -227,5 +262,21 @@ export class BoletaManagementPage {
   closeDeletePayslipModal(): void {
     this.deletePayslipModalOpen = false;
     this.payslipToDelete = null;
+  }
+
+  public applyFilters(): void {
+    this.currentPage = 1;
+    this.loadPayslips();
+  }
+
+  public resetFilters(): void {
+    this.filterDni = '';
+    this.filterName = '';
+    this.filterConcept = '';
+    this.filterStatus = '';
+    this.filterMonth = '';
+    this.filterYear = '';
+    this.currentPage = 1;
+    this.loadPayslips();
   }
 }
