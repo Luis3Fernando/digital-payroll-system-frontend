@@ -24,7 +24,7 @@ export class ProfileUserService {
         const apiErrorResponse = error.error as ApiResponse<any>;
 
         if (apiErrorResponse && apiErrorResponse.status) {
-          this.toastService.processApiResponse(apiErrorResponse, 'Error al Cargar Perfil');
+          this.toastService.processApiResponse(apiErrorResponse, 'Error al cargar perfil');
         } else {
           this.toastService.show(
             'error',
@@ -41,7 +41,7 @@ export class ProfileUserService {
   public updateEmail(request: UpdateEmailRequest): Observable<UpdateEmailData> {
     return this.profileRepository.updateEmail(request).pipe(
       tap((apiResponse) => {
-        this.toastService.processApiResponse(apiResponse, 'Actualización Exitosa');
+        this.toastService.processApiResponse(apiResponse, 'Actualización exitosa');
         const newEmail = apiResponse.data.email;
         const currentUser = this.sessionService.getCurrentUser();
 
@@ -56,7 +56,7 @@ export class ProfileUserService {
         const apiErrorResponse = error.error as ApiResponse<any>;
 
         if (apiErrorResponse && apiErrorResponse.status) {
-          this.toastService.processApiResponse(apiErrorResponse, 'Error al Actualizar Correo');
+          this.toastService.processApiResponse(apiErrorResponse, 'Error al actualizar correo');
         } else {
           this.toastService.show(
             'error',
@@ -73,13 +73,13 @@ export class ProfileUserService {
   public changePassword(request: ChangePasswordRequest): Observable<null> {
     return this.profileRepository.changePassword(request).pipe(
       tap((apiResponse) => {
-        this.toastService.processApiResponse(apiResponse, 'Contraseña Actualizada');
+        this.toastService.processApiResponse(apiResponse, 'Contraseña actualizada');
       }),
       
       map(() => null), 
       catchError((error) => {
         const apiErrorResponse = error.error as ApiResponse<any>;
-        const defaultTitle = 'Error al Cambiar Contraseña';
+        const defaultTitle = 'Error al cambiar contraseña';
 
         if (apiErrorResponse && apiErrorResponse.status) {
           this.toastService.processApiResponse(apiErrorResponse, defaultTitle);
