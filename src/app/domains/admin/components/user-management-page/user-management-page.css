@@ -1,0 +1,51 @@
+.h-full {
+    height: 100%;
+}
+
+.min-w-full {
+    width: 100%;
+}
+
+.flex-grow table {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-grow table thead {
+    flex-shrink: 0;
+}
+
+.flex-grow table tbody {
+    display: block;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.flex-grow table tbody tr {
+    display: table-row;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.expand-row {
+    min-height: 40px;
+}
+
+.expand-row {
+    height: 100%;
+}
+
+.min-w-full.h-full > tbody {
+    height: 100%;
+}
+
+.expand-row > td {
+    height: calc(100% / 10);
+    vertical-align: middle;
+}
+
+.flex-grow table tbody tr.expand-row {
+    min-height: 45px; 
+    height: auto;
+}

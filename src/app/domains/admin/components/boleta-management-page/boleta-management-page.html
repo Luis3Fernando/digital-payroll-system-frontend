@@ -1,4 +1,4 @@
-<div class="p-6 space-y-8">
+<div class="p-6 flex flex-col h-full space-y-8">
   <div class="flex items-center justify-between">
     <div>
       <h1 class="text-2xl font-semibold text-gray-800">Gestión de Boletas</h1>
@@ -7,101 +7,126 @@
     <div class="flex items-center gap-3">
       <button
         (click)="openUploadBoletasModal()"
-        class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+        [disabled]="isLoading"
+        class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition disabled:opacity-50"
       >
         <ng-icon name="heroArrowUpTray" size="20"></ng-icon>
         Cargar desde Excel
       </button>
       <button
         (click)="openClearPayslipsModal()"
-        class="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition"
+        [disabled]="isLoading"
+        class="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition disabled:opacity-50"
       >
         <ng-icon name="heroTrash" size="20"></ng-icon>
         Eliminar todas
       </button>
     </div>
   </div>
-  <div class="overflow-y-auto max-h-[500px] bg-white rounded-xl shadow border border-gray-100">
-    <table class="min-w-full text-sm text-left text-gray-700">
-      <thead class="bg-gray-50 text-gray-600 uppercase text-xs sticky top-0 z-10">
-        <tr>
-          <th class="px-6 py-3 font-semibold">DNI</th>
-          <th class="px-6 py-3 font-semibold">Concepto</th>
-          <th class="px-6 py-3 font-semibold">Monto</th>
-          <th class="px-6 py-3 font-semibold text-center">Estado</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let boleta of payslips" class="border-t hover:bg-gray-50 transition">
-          <td class="px-6 py-3">{{ boleta.profile_dni }}</td>
-          <td class="px-6 py-3">{{ boleta.concept }}</td>
-          <td class="px-6 py-3">s/. {{ boleta.amount }}</td>
-          <td class="px-6 py-3 text-center">
-            <span
-              class="px-3 py-1 rounded-full text-xs font-medium"
-              [ngClass]="{
-                'bg-yellow-100 text-yellow-700': boleta.view_status === 'unseen',
-                'bg-blue-100 text-blue-700': boleta.view_status === 'generated',
-                'bg-green-100 text-green-700': boleta.view_status === 'seen'
-              }"
-            >
-              {{
-                boleta.view_status === 'unseen'
-                  ? 'Pendiente'
-                  : boleta.view_status === 'generated'
-                  ? 'Generada'
-                  : 'Vista'
-              }}
-            </span>
-          </td>
-        </tr>
-        <tr *ngIf="payslips.length === 0 && !isLoading">
-          <td colspan="5" class="px-6 py-8 text-center text-gray-500">
-            No se encontraron boletas para los filtros seleccionados.
-          </td>
-        </tr>
-        <tr *ngIf="isLoading">
-          <td colspan="5" class="px-6 py-8 text-center text-gray-400 italic">
-            Cargando boletas...
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div
+    class="flex-grow overflow-y-auto bg-white rounded-xl shadow border border-gray-100 relative"
+    style="min-height: 400px"
+  >
+    <div
+      *ngIf="isLoading"
+      class="absolute inset-0 z-20 flex items-center justify-center bg-white bg-opacity-80"
+    >
+      <ng-icon name="heroArrowPath" class="w-8 h-8 text-blue-600 animate-spin"></ng-icon>
+    </div>
+    <div *ngIf="payslips.length > 0 && !isLoading" class="overflow-x-auto">
+      <table class="min-w-full text-sm text-left text-gray-700">
+        <thead class="bg-gray-50 text-gray-600 uppercase text-xs sticky top-0 z-10">
+          <tr>
+            <th class="px-3 py-3 font-semibold w-[50px]">#</th>
+            <th class="px-6 py-3 font-semibold">DNI</th>
+            <th class="px-6 py-3 font-semibold">Concepto</th>
+            <th class="px-6 py-3 font-semibold">Monto</th>
+            <th class="px-6 py-3 font-semibold text-center">Estado</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-gray-200">
+          <tr
+            *ngFor="let boleta of payslips; let i = index"
+            class="border-t hover:bg-gray-50 transition"
+          >
+            <td class="px-3 py-4 text-center font-medium w-[50px]">
+              {{ (currentPage - 1) * pageSize + i + 1 }}
+            </td>
+
+            <td class="px-6 py-4">{{ boleta.profile_dni }}</td>
+            <td class="px-6 py-4">{{ boleta.concept }}</td>
+            <td class="px-6 py-4">s/. {{ boleta.amount }}</td>
+
+            <td class="px-6 py-4 text-center">
+              <span
+                class="px-3 py-1 rounded-full text-xs font-medium"
+                [ngClass]="{
+                  'bg-yellow-100 text-yellow-700': boleta.view_status === 'unseen',
+                  'bg-blue-100 text-blue-700': boleta.view_status === 'generated',
+                  'bg-green-100 text-green-700': boleta.view_status === 'seen'
+                }"
+              >
+                {{
+                  boleta.view_status === 'unseen'
+                    ? 'Pendiente'
+                    : boleta.view_status === 'generated'
+                    ? 'Generada'
+                    : 'Vista'
+                }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="payslips.length === 0 && !isLoading" class="p-6 text-center text-gray-500">
+      <p>No se encontraron boletas para los filtros seleccionados.</p>
+    </div>
   </div>
-  <!--
-  <div class="flex items-center justify-between mt-4">
-    <p class="text-sm text-gray-500">
-      Mostrando {{ pagination.page }} de {{ pagination.total_pages }} páginas
+
+  <div
+    *ngIf="paginationMeta && paginationMeta.total_items > 0"
+    class="flex items-center justify-between pt-4 border-t border-gray-200"
+  >
+    <p class="text-sm text-gray-600">
+      Total de resultados:
+      <span class="font-semibold">{{ paginationMeta.total_items | number }}</span>
     </p>
+
     <div class="flex items-center gap-2">
       <button
-        class="p-2 rounded-lg hover:bg-gray-100"
-        [disabled]="pagination.page === 1"
-        (click)="changePage(pagination.page - 1)"
+        class="p-2 rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        [disabled]="!paginationMeta.has_previous || isLoading"
+        (click)="changePage(paginationMeta.current_page - 1)"
       >
         <ng-icon name="heroChevronLeft" size="20"></ng-icon>
       </button>
+
+      <ng-container *ngFor="let page of pageRange">
+        <button
+          *ngIf="page !== '...'"
+          (click)="changePage(+page)"
+          [disabled]="isLoading"
+          [ngClass]="{
+            'bg-blue-600 text-white': paginationMeta.current_page === page,
+            'text-gray-700 hover:bg-gray-100': paginationMeta.current_page !== page
+          }"
+          class="px-3 py-1 rounded-lg font-medium text-sm transition"
+        >
+          {{ page }}
+        </button>
+        <span *ngIf="page === '...'" class="px-3 py-1 text-gray-500 select-none">...</span>
+      </ng-container>
       <button
-        *ngFor="let p of [].constructor(pagination.total_pages); let i = index"
-        (click)="changePage(i + 1)"
-        [ngClass]="{
-          'bg-blue-600 text-white': pagination.page === i + 1,
-          'text-gray-600 hover:bg-gray-100': pagination.page !== i + 1
-        }"
-        class="px-3 py-1 rounded-lg transition"
-      >
-        {{ i + 1 }}
-      </button>
-      <button
-        class="p-2 rounded-lg hover:bg-gray-100"
-        [disabled]="pagination.page === pagination.total_pages"
-        (click)="changePage(pagination.page + 1)"
+        class="p-2 rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        [disabled]="!paginationMeta.has_next || isLoading"
+        (click)="changePage(paginationMeta.current_page + 1)"
       >
         <ng-icon name="heroChevronRight" size="20"></ng-icon>
       </button>
     </div>
   </div>
-</div>-->
 </div>
 <div
   *ngIf="uploadBoletasModalOpen"

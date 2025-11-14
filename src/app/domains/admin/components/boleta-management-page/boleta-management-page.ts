@@ -27,7 +27,7 @@ export class BoletaManagementPage {
   public paginationMeta: ApiPagination | null = null;
 
   public currentPage = 1;
-  public pageSize = 20;
+  public pageSize = 10;
   public currentSearchTerm = '';
 
   public uploadBoletasModalOpen = false;
@@ -40,8 +40,6 @@ export class BoletaManagementPage {
 
   ngOnInit(): void {
     this.loadPayslips();
-
-    // Búsqueda con debounce
     this.searchSubject.pipe(debounceTime(400)).subscribe((term) => {
       this.currentSearchTerm = term;
       this.currentPage = 1;
@@ -49,12 +47,10 @@ export class BoletaManagementPage {
     });
   }
 
-  /** 🔍 Evento de cambio en el campo de búsqueda */
   onSearchChange(): void {
     this.searchSubject.next(this.currentSearchTerm.trim());
   }
 
-  /** 📄 Cargar boletas desde el backend */
   loadPayslips(): void {
     this.isLoading = true;
 
@@ -78,13 +74,62 @@ export class BoletaManagementPage {
     });
   }
 
-  /** 📄 Cambiar página */
+  changePage(page: number): void {
+    if (page < 1 || !this.paginationMeta || page > this.paginationMeta.total_pages) return;
+    this.currentPage = page;
+    this.loadPayslips();
+  }
+
+  get pageRange(): (number | string)[] {
+    if (!this.paginationMeta) return [];
+
+    const totalPages = this.paginationMeta.total_pages;
+    const currentPage = this.paginationMeta.current_page;
+    const maxPagesToShow = 5;
+
+    if (totalPages <= maxPagesToShow) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    let startPage = Math.max(2, currentPage - 1);
+    let endPage = Math.min(totalPages - 1, currentPage + 1);
+
+    if (currentPage < 4) {
+      startPage = 2;
+      endPage = maxPagesToShow - 1;
+    } else if (currentPage > totalPages - 3) {
+      startPage = totalPages - maxPagesToShow + 2;
+      endPage = totalPages - 1;
+    }
+
+    const pages: (number | string)[] = [1];
+
+    if (startPage > 2) {
+      pages.push('...');
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    if (endPage < totalPages - 1) {
+      pages.push('...');
+    }
+
+    if (totalPages > 1) {
+      pages.push(totalPages);
+    }
+
+    return pages.filter((value, index, self) => {
+      return self.indexOf(value) === index;
+    });
+  }
+
   onPageChange(newPage: number): void {
     this.currentPage = newPage;
     this.loadPayslips();
   }
 
-  /** 📤 Abrir/Cerrar modal de carga de boletas */
   openUploadBoletasModal(): void {
     this.uploadBoletasModalOpen = true;
   }
