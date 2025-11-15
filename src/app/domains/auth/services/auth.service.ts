@@ -151,6 +151,7 @@ export class AuthService {
         const newResponseData = apiResponse.data;
         if (newResponseData) {
           this.sessionService.updateAccessToken(newResponseData.access);
+          this.sessionService.updateRefreshToken(newResponseData.refresh);
           this.sessionService.notifyTokenRefreshed(true);
         }
       }),

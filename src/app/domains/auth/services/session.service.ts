@@ -66,6 +66,14 @@ export class SessionService {
     }
   }
 
+  public updateRefreshToken(newAccess: string): void {
+    const session = this.getSessionFromStorage();
+    if (session) {
+      session.refresh = newAccess;
+      this.setSessionToStorage(session);
+    }
+  }
+
   public getAccessToken(): string | null {
     return this.getSessionFromStorage()?.access || null;
   }
