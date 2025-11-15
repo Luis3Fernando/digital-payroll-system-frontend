@@ -34,10 +34,10 @@
           <ng-icon name="heroUsers" size="22" class="opacity-80"></ng-icon>
         </div>
         <h2 class="text-3xl font-bold">
-          {{ dashboardData?.users?.total }}
+          {{ dashboardData.users.total }}
         </h2>
         <p class="text-xs opacity-80 mt-1">
-          +{{ dashboardData?.users?.today_registered }} nuevos hoy
+          +{{ dashboardData.users.today_registered }} nuevos hoy
         </p>
       </div>
       <div
@@ -48,10 +48,10 @@
           <ng-icon name="heroDocumentDuplicate" size="22" class="opacity-80"></ng-icon>
         </div>
         <h2 class="text-3xl font-bold">
-          {{ dashboardData?.payslips?.generated?.total }}
+          {{ dashboardData.payslips.generated.total }}
         </h2>
         <p class="text-xs opacity-80 mt-1">
-          Última: {{ dashboardData?.payslips?.generated?.last_generated | date : 'shortTime' }}
+          Última: {{ dashboardData.payslips.generated.last_generated | date : 'shortTime' }}
         </p>
       </div>
       <div
@@ -62,7 +62,7 @@
           <ng-icon name="heroClock" size="22" class="opacity-80"></ng-icon>
         </div>
         <h2 class="text-3xl font-bold">
-          {{ dashboardData?.payslips?.unseen?.total }}
+          {{ dashboardData.payslips.unseen.total }}
         </h2>
         <p class="text-xs opacity-80 mt-1">Pendientes de revisión por usuarios.</p>
       </div>
@@ -75,10 +75,10 @@
           <ng-icon name="heroCheckCircle" size="22" class="opacity-80"></ng-icon>
         </div>
         <h2 class="text-3xl font-bold">
-          {{ dashboardData?.payslips?.seen?.total }}
+          {{ dashboardData.payslips.seen.total }}
         </h2>
         <p class="text-xs opacity-80 mt-1">
-          Última vista: {{ dashboardData?.payslips?.seen?.last_seen | date : 'shortTime' }}
+          Última vista: {{ dashboardData.payslips.seen.last_seen | date : 'shortTime' }}
         </p>
       </div>
     </div>
@@ -92,7 +92,7 @@
           <ng-icon name="heroChartBar" size="22" class="opacity-80"></ng-icon>
         </div>
         <h2 class="text-3xl font-bold">
-          {{ dashboardData?.payslips?.view_rate }}
+          {{ dashboardData.payslips.view_rate }}
         </h2>
         <p class="text-xs opacity-80 mt-1">% de boletas generadas que han sido vistas.</p>
       </div>
@@ -105,22 +105,10 @@
           <ng-icon name="heroUserMinus" size="22" class="opacity-80"></ng-icon>
         </div>
         <h2 class="text-3xl font-bold">
-          {{ dashboardData?.users?.never_seen_payslips }}
+          {{ dashboardData.users.never_seen_payslips }}
         </h2>
         <p class="text-xs opacity-80 mt-1">Usuarios que nunca han visto una boleta.</p>
       </div>
-
-      <div
-        class="bg-linear-to-br from-teal-500 to-cyan-600 text-white rounded-xl shadow-xl p-5 hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
-      >
-        <div class="flex items-center justify-between mb-3">
-          <h3 class="text-sm font-medium opacity-90">Apertura Promedio</h3>
-          <ng-icon name="heroClock" size="22" class="opacity-80"></ng-icon>
-        </div>
-        <h2 class="text-3xl font-bold">{{ dashboardData?.payslips?.seen?.avg_open_time }}s</h2>
-        <p class="text-xs opacity-80 mt-1">Tiempo promedio desde generación hasta vista.</p>
-      </div>
-
       <div
         class="bg-linear-to-br from-amber-500 to-orange-600 text-white rounded-xl shadow-xl p-5 hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
       >
@@ -129,14 +117,13 @@
           <ng-icon name="heroBolt" size="22" class="opacity-80"></ng-icon>
         </div>
         <h2 class="text-3xl font-bold">
-          {{ dashboardData?.engagement?.logs_today }}
+          {{ dashboardData.engagement.logs_today }}
         </h2>
         <p class="text-xs opacity-80 mt-1">Total de acciones registradas por usuarios hoy.</p>
       </div>
     </div>
   </section>
   }
-
   <section class="mt-8 mb-10">
     <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
       <ng-icon name="heroPresentationChartLine" size="28" class="text-indigo-600"></ng-icon>
@@ -198,12 +185,7 @@
               <div class="flex items-center gap-3">
                 <span
                   class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
-                  [ngClass]="{
-                    'bg-yellow-500 text-white': i === 0,
-                    'bg-gray-300 text-gray-700': i === 1,
-                    'bg-amber-100 text-amber-700': i === 2,
-                    'bg-gray-100 text-gray-500': i > 2
-                  }"
+                  class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shadow-md bg-gradient-to-br from-indigo-500 to-purple-600 text-white"
                 >
                   {{ i + 1 }}
                 </span>

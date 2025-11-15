@@ -21,6 +21,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { SecondsToTimePipe } from '@shared/pipes/seconds-to-time.pipe';
 
 @Component({
   selector: 'app-admin-dashboard-page',
