@@ -1,5 +1,4 @@
 import {
-  APP_INITIALIZER,
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
@@ -8,7 +7,6 @@ import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { appRoutes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideIcons } from '@ng-icons/core';
 import {
   heroArrowDownTray,
@@ -43,10 +41,17 @@ import {
   heroXMark,
   heroPencilSquare,
   heroLockOpen,
+  heroBolt,
+  heroUserMinus,
+  heroChartBar,
+  heroShieldCheck,
+  heroPresentationChartLine,
+  heroTrophy,
 } from '@ng-icons/heroicons/outline';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideToastr } from 'ngx-toastr';
 import { AuthInterceptor } from '@core/interceptors/token.interceptor';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -56,6 +61,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideHttpClient(withInterceptors([AuthInterceptor])),
     provideToastr(),
+    provideCharts(withDefaultRegisterables()),
     provideIcons({
       heroIdentification,
       heroLockClosed,
@@ -89,6 +95,12 @@ export const appConfig: ApplicationConfig = {
       heroDocumentCheck,
       heroPencilSquare,
       heroLockOpen,
+      heroBolt,
+      heroUserMinus,
+      heroChartBar,
+      heroShieldCheck,
+      heroPresentationChartLine,
+      heroTrophy
     }),
   ],
 };

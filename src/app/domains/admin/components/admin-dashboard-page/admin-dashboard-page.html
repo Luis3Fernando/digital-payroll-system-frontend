@@ -13,7 +13,7 @@
   <div class="text-center text-gray-500 mt-10">Cargando estadísticas...</div>
   } @else if (hasError) {
   <div class="bg-red-50 border border-red-200 text-red-700 p-8 rounded-xl text-center space-y-4">
-    <p class="font-semibold">⚠️ No se pudieron obtener las estadísticas.</p>
+    <p class="font-semibold">No se pudieron obtener las estadísticas.</p>
     <p class="text-sm">Ocurrió un error. Por favor, inténtelo de nuevo.</p>
     <button
       (click)="loadStats()"
@@ -22,139 +22,246 @@
       Reintentar Carga
     </button>
   </div>
-
-  } @else if (dashboardStats) {
-  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-    <div class="bg-white rounded-xl shadow p-5 border border-gray-100 transition hover:shadow-md">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-sm font-medium text-gray-600">Usuarios registrados</h3>
-        <ng-icon name="heroUsers" size="22"></ng-icon>
-      </div>
-      <h2 class="text-3xl font-bold text-blue-600">{{ dashboardStats.users.total }}</h2>
-      <p class="text-xs text-gray-400 mt-1">
-        +{{ dashboardStats.users.today_registered }} nuevos hoy
-      </p>
-    </div>
-
-    <div class="bg-white rounded-xl shadow p-5 border border-gray-100 transition hover:shadow-md">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-sm font-medium text-gray-600">Boletas generadas</h3>
-        <ng-icon name="heroDocumentDuplicate" size="22"></ng-icon>
-      </div>
-      <h2 class="text-3xl font-bold text-blue-600">
-        {{ dashboardStats.payslips_generated.total }}
-      </h2>
-      <p class="text-xs text-gray-400 mt-1">
-        Última: {{ dashboardStats.payslips_generated.last_generated | date : 'shortTime' }}
-      </p>
-    </div>
-
-    <div class="bg-white rounded-xl shadow p-5 border border-gray-100 transition hover:shadow-md">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-sm font-medium text-gray-600">No Vistas</h3>
-        <ng-icon name="heroClock" size="22"></ng-icon>
-      </div>
-      <h2 class="text-3xl font-bold text-yellow-500">{{ dashboardStats.payslips_unseen.total }}</h2>
-      <p class="text-xs text-gray-400 mt-1">Pendientes de revisión</p>
-    </div>
-
-    <div class="bg-white rounded-xl shadow p-5 border border-gray-100 transition hover:shadow-md">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-sm font-medium text-gray-600">Vistas</h3>
-        <ng-icon name="heroCheckCircle" size="22"></ng-icon>
-      </div>
-      <h2 class="text-3xl font-bold text-green-500">{{ dashboardStats.payslips_seen.total }}</h2>
-      <p class="text-xs text-gray-400 mt-1">
-        Última vista: {{ dashboardStats.payslips_seen.last_seen | date : 'shortTime' }}
-      </p>
-    </div>
-  </div>
-  }
-  <div class="bg-white rounded-xl shadow p-8 border border-gray-100 text-center space-y-4">
-    <div class="flex flex-col items-center justify-center space-y-3">
-      <ng-icon name="heroArrowUpTray" size="40"></ng-icon>
-      <h2 class="text-lg font-semibold text-gray-800">Cargar boletas</h2>
-      <p class="text-gray-500 text-sm max-w-md">
-        Puedes cargar el archivo Excel o CSV con las boletas para actualizar el sistema.
-      </p>
-      <button
-        (click)="openUploadBoletasModal()"
-        class="mt-2 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
-      >
-        Cargar datos
-      </button>
-      <p class="text-xs text-gray-400">Formatos aceptados: .xlsx, .csv</p>
-    </div>
-  </div>
-</div>
-<div
-  *ngIf="uploadBoletasModalOpen"
-  class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
->
-  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative animate-fadeIn">
-    <button
-      (click)="closeUploadBoletasModal()"
-      class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition"
-    >
-      <ng-icon name="heroXMark" size="22"></ng-icon>
-    </button>
-    <div class="flex items-center gap-3 mb-5">
-      <div class="bg-blue-100 text-blue-600 p-3 rounded-full flex items-center justify-center">
-        <ng-icon name="heroArrowUpTray" size="22"></ng-icon>
-      </div>
-      <h2 class="text-xl font-semibold text-gray-800">Cargar boletas desde Excel</h2>
-    </div>
-    <div class="space-y-4">
-      <label
-        *ngIf="!selectedBoletasFile"
-        for="boletasFile"
-        class="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 cursor-pointer hover:border-blue-400 transition"
-      >
-        <ng-icon name="heroDocumentArrowUp" size="28" class="text-gray-400 mb-2"></ng-icon>
-        <span class="text-gray-600 text-sm">Haz clic para seleccionar un archivo</span>
-        <input
-          id="boletasFile"
-          type="file"
-          (change)="onBoletasFileSelected($event)"
-          accept=".xlsx,.csv"
-          class="hidden"
-        />
-      </label>
+  } @else if (dashboardData) {
+  <section class="mt-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Estadísticas Clave del Sistema</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
       <div
-        *ngIf="selectedBoletasFile"
-        class="flex items-center justify-between border border-green-300 bg-green-50 rounded-lg p-4"
+        class="bg-linear-to-br from-blue-500 to-indigo-600 text-white rounded-xl shadow-xl p-5 hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
       >
-        <div class="flex items-center gap-3">
-          <div class="bg-green-100 text-green-600 p-2 rounded-full">
-            <ng-icon name="heroCheckCircle" size="22"></ng-icon>
-          </div>
-          <div>
-            <p class="text-sm font-medium text-gray-700">{{ selectedBoletasFile.name }}</p>
-            <p class="text-xs text-gray-500">Archivo listo para subir</p>
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-medium opacity-90">Usuarios Registrados</h3>
+          <ng-icon name="heroUsers" size="22" class="opacity-80"></ng-icon>
+        </div>
+        <h2 class="text-3xl font-bold">
+          {{ dashboardData?.users?.total }}
+        </h2>
+        <p class="text-xs opacity-80 mt-1">
+          +{{ dashboardData?.users?.today_registered }} nuevos hoy
+        </p>
+      </div>
+      <div
+        class="bg-linear-to-br from-blue-500 to-indigo-600 text-white rounded-xl shadow-xl p-5 hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-medium opacity-90">Boletas Generadas</h3>
+          <ng-icon name="heroDocumentDuplicate" size="22" class="opacity-80"></ng-icon>
+        </div>
+        <h2 class="text-3xl font-bold">
+          {{ dashboardData?.payslips?.generated?.total }}
+        </h2>
+        <p class="text-xs opacity-80 mt-1">
+          Última: {{ dashboardData?.payslips?.generated?.last_generated | date : 'shortTime' }}
+        </p>
+      </div>
+      <div
+        class="bg-linear-to-br from-yellow-500 to-amber-700 text-white rounded-xl shadow-xl p-5 transform hover:scale-105 transition-all duration-300"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-medium opacity-90">Boletas Pendientes (No Vistas)</h3>
+          <ng-icon name="heroClock" size="22" class="opacity-80"></ng-icon>
+        </div>
+        <h2 class="text-3xl font-bold">
+          {{ dashboardData?.payslips?.unseen?.total }}
+        </h2>
+        <p class="text-xs opacity-80 mt-1">Pendientes de revisión por usuarios.</p>
+      </div>
+
+      <div
+        class="bg-linear-to-br from-green-500 to-emerald-600 text-white rounded-xl shadow-xl p-5 hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-medium opacity-90">Boletas Vistas</h3>
+          <ng-icon name="heroCheckCircle" size="22" class="opacity-80"></ng-icon>
+        </div>
+        <h2 class="text-3xl font-bold">
+          {{ dashboardData?.payslips?.seen?.total }}
+        </h2>
+        <p class="text-xs opacity-80 mt-1">
+          Última vista: {{ dashboardData?.payslips?.seen?.last_seen | date : 'shortTime' }}
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-6">
+      <div
+        class="bg-linear-to-br from-purple-500 to-pink-600 text-white rounded-xl shadow-xl p-5 hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-medium opacity-90">Tasa de Visualización</h3>
+          <ng-icon name="heroChartBar" size="22" class="opacity-80"></ng-icon>
+        </div>
+        <h2 class="text-3xl font-bold">
+          {{ dashboardData?.payslips?.view_rate }}
+        </h2>
+        <p class="text-xs opacity-80 mt-1">% de boletas generadas que han sido vistas.</p>
+      </div>
+
+      <div
+        class="bg-linear-to-br from-red-600 to-rose-700 text-white rounded-xl shadow-xl p-5 hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-medium opacity-90">Usuarios sin Adopción</h3>
+          <ng-icon name="heroUserMinus" size="22" class="opacity-80"></ng-icon>
+        </div>
+        <h2 class="text-3xl font-bold">
+          {{ dashboardData?.users?.never_seen_payslips }}
+        </h2>
+        <p class="text-xs opacity-80 mt-1">Usuarios que nunca han visto una boleta.</p>
+      </div>
+
+      <div
+        class="bg-linear-to-br from-teal-500 to-cyan-600 text-white rounded-xl shadow-xl p-5 hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-medium opacity-90">Apertura Promedio</h3>
+          <ng-icon name="heroClock" size="22" class="opacity-80"></ng-icon>
+        </div>
+        <h2 class="text-3xl font-bold">{{ dashboardData?.payslips?.seen?.avg_open_time }}s</h2>
+        <p class="text-xs opacity-80 mt-1">Tiempo promedio desde generación hasta vista.</p>
+      </div>
+
+      <div
+        class="bg-linear-to-br from-amber-500 to-orange-600 text-white rounded-xl shadow-xl p-5 hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-medium opacity-90">Actividad Hoy</h3>
+          <ng-icon name="heroBolt" size="22" class="opacity-80"></ng-icon>
+        </div>
+        <h2 class="text-3xl font-bold">
+          {{ dashboardData?.engagement?.logs_today }}
+        </h2>
+        <p class="text-xs opacity-80 mt-1">Total de acciones registradas por usuarios hoy.</p>
+      </div>
+    </div>
+  </section>
+  }
+
+  <section class="mt-8 mb-10">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+      <ng-icon name="heroPresentationChartLine" size="28" class="text-indigo-600"></ng-icon>
+      Diagrama de Tendencia de Actividad (Usuarios)
+    </h2>
+    <div
+      class="bg-white rounded-xl shadow p-6 border border-gray-100 transform hover:shadow-lg transition duration-300"
+    >
+      <div class="flex items-center justify-between mb-5 border-b pb-3">
+        <h3 class="text-lg font-semibold text-gray-800">
+          Actividad por Hora del Día (00:00 - 23:00)
+        </h3>
+      </div>
+      <div class="relative h-96 w-full">
+        <div
+          *ngIf="isLoading"
+          class="absolute inset-0 flex items-center justify-center bg-white rounded-lg z-10"
+        >
+          <ng-icon name="heroArrowPath" class="w-8 h-8 text-blue-500 animate-spin"></ng-icon>
+        </div>
+        <canvas
+          *ngIf="!isLoading && hourlyActivityData.length > 0"
+          baseChart
+          class="h-full"
+          [data]="chartData"
+          [options]="chartOptions"
+          type="line"
+        >
+          {{ chart }}
+        </canvas>
+        <div
+          *ngIf="!isLoading && hourlyActivityData.length === 0"
+          class="h-full flex items-center justify-center bg-gray-50 rounded-lg border border-dashed border-gray-200"
+        >
+          <p class="text-gray-400 italic text-sm">
+            No hay datos suficientes para generar el gráfico de actividad.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="mt-8 mb-10">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+      <ng-icon name="heroShieldCheck" size="28" class="text-green-600"></ng-icon>
+      Auditoría y Compromiso del Sistema
+    </h2>
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+        <div class="flex items-center justify-between mb-5 border-b pb-3">
+          <h3 class="text-lg font-semibold text-gray-800">Usuarios Más Activos (Top 5)</h3>
+          <ng-icon name="heroTrophy" size="24" class="text-yellow-600"></ng-icon>
+        </div>
+        <div *ngIf="dashboardData?.engagement?.top_users?.length; else noTopUsers">
+          <div class="space-y-3">
+            <div
+              *ngFor="let user of dashboardData?.engagement?.top_users?.slice(0, 5); let i = index"
+              class="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0"
+            >
+              <div class="flex items-center gap-3">
+                <span
+                  class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
+                  [ngClass]="{
+                    'bg-yellow-500 text-white': i === 0,
+                    'bg-gray-300 text-gray-700': i === 1,
+                    'bg-amber-100 text-amber-700': i === 2,
+                    'bg-gray-100 text-gray-500': i > 2
+                  }"
+                >
+                  {{ i + 1 }}
+                </span>
+                <p class="font-medium text-gray-700">
+                  {{ user.full_name }}
+                </p>
+              </div>
+              <span class="text-sm font-semibold text-blue-600">
+                {{ user.total | number }} acciones
+              </span>
+            </div>
           </div>
         </div>
-        <button
-          (click)="removeSelectedBoletasFile()"
-          class="text-gray-400 hover:text-red-500 transition"
-          title="Eliminar archivo"
+        <ng-template #noTopUsers>
+          <div class="text-center py-8 text-gray-400 italic">
+            No hay actividad reciente de usuarios registrada.
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+        <div class="flex items-center justify-between mb-5 border-b pb-3">
+          <h3 class="text-lg font-semibold text-gray-800">Últimas Acciones de Admin (Auditoría)</h3>
+          <ng-icon name="heroClock" size="24" class="text-gray-500"></ng-icon>
+        </div>
+
+        <div
+          *ngIf="securityData && securityData.recent_admin_actions.length > 0; else noRecentActions"
         >
-          <ng-icon name="heroXMark" size="18"></ng-icon>
-        </button>
+          <ul class="divide-y divide-gray-100">
+            <li
+              *ngFor="let action of securityData.recent_admin_actions; let i = index"
+              class="py-3 flex items-center justify-between"
+            >
+              <div class="flex flex-col">
+                <span class="text-sm font-medium text-gray-800">{{ action.action }}</span>
+                <span class="text-xs text-gray-500">Por: {{ action.user }}</span>
+              </div>
+              <span class="text-xs text-gray-400">{{ action.date }}</span>
+            </li>
+          </ul>
+        </div>
+        <ng-template #noRecentActions>
+          <div class="text-center py-8 text-gray-500 italic">
+            No hay registros de acciones recientes de administradores.
+          </div>
+        </ng-template>
+
+        <div *ngIf="!securityData" class="space-y-4 pt-2">
+          <div *ngFor="let _ of [1, 2, 3, 4, 5]" class="flex items-center justify-between py-2">
+            <div class="flex flex-col gap-1">
+              <div class="h-4 bg-gray-200 rounded w-48 animate-pulse"></div>
+              <div class="h-3 bg-gray-100 rounded w-32 animate-pulse"></div>
+            </div>
+            <div class="h-3 bg-gray-100 rounded w-20 animate-pulse"></div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="flex justify-end mt-6 gap-3">
-      <button
-        (click)="closeUploadBoletasModal()"
-        class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
-      >
-        Cancelar
-      </button>
-      <app-loading-button
-        (click)="uploadBoletasFile()"
-        [text]="'Subir archivo'"
-        [loading]="isUploadingBoletas"
-      >
-      </app-loading-button>
-    </div>
-  </div>
+  </section>
 </div>
