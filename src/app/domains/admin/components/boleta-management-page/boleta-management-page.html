@@ -191,7 +191,7 @@
               </span>
             </td>
             <td class="px-6 py-4 text-center">
-              <div class="flex items-center justify-center gap-2">
+              <div class="flex items-center justify-between gap-0.5">
                 <button
                   (click)="accionBoleta(boleta)"
                   [disabled]="
@@ -233,7 +233,6 @@
                     {{ boleta.view_status === 'unseen' ? 'Generar' : 'Ver' }}
                   </span>
                 </button>
-
                 <button
                   (click)="openDeletePayslipModal(boleta)"
                   [disabled]="boleta.isDeleting || isLoading"

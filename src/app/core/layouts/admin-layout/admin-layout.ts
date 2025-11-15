@@ -19,10 +19,11 @@ export class AdminLayout {
 
   sidebarOpen: boolean = true;
   confirmLogoutOpen: boolean = false;
+  public isSidebarOpen: boolean = false;
   loadingLogout: boolean = false;
 
   toggleSidebar() {
-    this.sidebarOpen = !this.sidebarOpen;
+    this.isSidebarOpen = !this.isSidebarOpen;
   }
 
   openConfirmLogout() {

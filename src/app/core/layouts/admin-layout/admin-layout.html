@@ -1,89 +1,83 @@
 <div class="flex h-screen bg-gray-50">
-  <aside class="bg-gray-950 text-gray-200 w-64 h-screen flex flex-col shadow-xl">
-    <div class="flex items-center space-x-3 p-5 border-b border-gray-800">
-      <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-        <ng-icon name="heroCog6Tooth" size="25"></ng-icon>
-      </div>
-      <span class="text-lg font-semibold text-white">Panel Administrativo</span>
-    </div>
-    <div class="p-5 flex-1 mt-10">
-      <p class="text-gray-500 tracking-wide mb-3 font-light">Gestión</p>
-      <nav>
-        <ul class="space-y-3">
-          <li>
-            <a
-              routerLink="/admin/dashboard"
-              routerLinkActive="bg-blue-600 text-white"
-              [routerLinkActiveOptions]="{ exact: true }"
-              class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-600 hover:cursor-pointer hover:text-white transition-colors duration-200"
-            >
-              <ng-icon name="heroHome" class="w-5 h-5"></ng-icon>
-              <span>Principal</span>
-            </a>
-          </li>
-          <li>
-            <a
-              routerLink="/admin/usuarios"
-              routerLinkActive="bg-blue-600 text-white"
-              class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-600 hover:cursor-pointer hover:text-white transition-colors duration-200"
-            >
-              <ng-icon name="heroUsers" class="w-5 h-5"></ng-icon>
-              <span>Usuarios</span>
-            </a>
-          </li>
-          <li>
-            <a
-              routerLink="/admin/boletas"
-              routerLinkActive="bg-blue-600 text-white"
-              class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-600 hover:cursor-pointer hover:text-white transition-colors duration-200"
-            >
-              <ng-icon name="heroDocumentDuplicate" class="w-5 h-5"></ng-icon>
-              <span>Boletas</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </aside>
-  <div class="flex-1 flex flex-col overflow-hidden">
-    <header
-      class="bg-white border-b border-gray-200 flex items-center justify-between px-6 py-3 shadow-sm"
+
+    <aside
+        [ngClass]="{ 'translate-x-0': isSidebarOpen, 'translate-x-full': !isSidebarOpen }"
+        class="bg-gray-950 text-gray-200 w-64 h-screen flex flex-col shadow-xl 
+               fixed top-0 right-0 z-50 transform transition-transform duration-300
+               md:relative md:translate-x-0 md:flex" 
     >
-      <button class="text-gray-600 focus:outline-none md:hidden" (click)="toggleSidebar()">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h16"
-          />
-        </svg>
-      </button>
-      <h1 class="text-lg font-semibold text-gray-700">Panel Administrativo</h1>
-      <div class="flex items-center space-x-5">
-        <div class="flex items-center gap-2 text-gray-700">
-          <ng-icon name="heroUserCircle" class="w-5 h-5 text-gray-600"></ng-icon>
-          <span class="font-medium">Administrador</span>
+        <div class="flex items-center space-x-3 p-5 border-b border-gray-800">
+            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                <ng-icon name="heroCog6Tooth" size="25"></ng-icon>
+            </div>
+            <span class="text-lg font-semibold text-white">Panel Administrativo</span>
         </div>
-        <button
-          (click)="openConfirmLogout()"
-          class="flex items-center gap-2 text-gray-600 hover:text-red-600 transition-colors duration-200 cursor-pointer"
+        
+        <div class="p-5 flex-1 mt-10">
+            <p class="text-gray-500 tracking-wide mb-3 font-light">Gestión</p>
+            <nav>
+                <ul class="space-y-3">
+                    <li (click)="isSidebarOpen = false">
+                        <a routerLink="/admin/dashboard" routerLinkActive="bg-blue-600 text-white" [routerLinkActiveOptions]="{ exact: true }" class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-600 hover:cursor-pointer hover:text-white transition-colors duration-200">
+                            <ng-icon name="heroHome" class="w-5 h-5"></ng-icon>
+                            <span>Principal</span>
+                        </a>
+                    </li>
+                    <li (click)="isSidebarOpen = false">
+                        <a routerLink="/admin/usuarios" routerLinkActive="bg-blue-600 text-white" class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-600 hover:cursor-pointer hover:text-white transition-colors duration-200">
+                            <ng-icon name="heroUsers" class="w-5 h-5"></ng-icon>
+                            <span>Usuarios</span>
+                        </a>
+                    </li>
+                    <li (click)="isSidebarOpen = false">
+                        <a routerLink="/admin/boletas" routerLinkActive="bg-blue-600 text-white" class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-600 hover:cursor-pointer hover:text-white transition-colors duration-200">
+                            <ng-icon name="heroDocumentDuplicate" class="w-5 h-5"></ng-icon>
+                            <span>Boletas</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </aside>
+    
+    <div 
+        *ngIf="isSidebarOpen"
+        (click)="toggleSidebar()" 
+        class="fixed inset-0 bg-black/50 z-40 md:hidden"
+    ></div>
+
+    <div class="flex-1 flex flex-col overflow-hidden">
+        
+        <header
+            class="bg-white border-b border-gray-200 flex items-center justify-between px-6 py-3 shadow-sm"
         >
-          <ng-icon name="heroArrowRightOnRectangle" class="w-5 h-5"></ng-icon>
-          <span>Cerrar sesión</span>
-        </button>
-      </div>
-    </header>
-    <main class="flex-1 p-6 overflow-y-auto bg-gray-50">
-      <router-outlet></router-outlet>
-    </main>
-  </div>
+            <button class="text-gray-600 focus:outline-none md:hidden" (click)="toggleSidebar()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            
+            <h1 class="text-lg font-semibold text-gray-700 md:ml-0">Panel Administrativo</h1>
+            
+            <div class="flex items-center space-x-5">
+                <div class="flex items-center gap-2 text-gray-700">
+                    <ng-icon name="heroUserCircle" class="w-5 h-5 text-gray-600"></ng-icon>
+                    <span class="font-medium">Administrador</span>
+                </div>
+                <button
+                    (click)="openConfirmLogout()"
+                    class="flex items-center gap-2 text-gray-600 hover:text-red-600 transition-colors duration-200 cursor-pointer"
+                >
+                    <ng-icon name="heroArrowRightOnRectangle" class="w-5 h-5"></ng-icon>
+                    <span>Cerrar sesión</span>
+                </button>
+            </div>
+        </header>
+        
+        <main class="flex-1 p-6 overflow-y-auto bg-gray-50">
+            <router-outlet></router-outlet>
+        </main>
+    </div>
 </div>
 <div
   *ngIf="confirmLogoutOpen"

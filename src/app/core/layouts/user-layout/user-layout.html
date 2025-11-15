@@ -1,16 +1,20 @@
 <div class="flex h-screen bg-white">
-  <aside class="bg-gray-900 text-gray-300 w-64 h-screen flex flex-col shadow-lg">
+  <aside
+    [ngClass]="{ 'translate-x-0': isSidebarOpen, '-translate-x-full': !isSidebarOpen }"
+    class="bg-gray-900 text-gray-300 w-64 h-screen flex flex-col shadow-lg fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 md:translate-x-0 md:relative"
+  >
     <div class="flex items-center space-x-3 p-5 border-b border-gray-700">
       <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
         <ng-icon name="heroDocumentText" size="25"></ng-icon>
       </div>
       <span class="text-lg font-semibold text-white">Sistema de Boletas</span>
     </div>
+
     <div class="p-5 flex-1 mt-10">
       <p class="text-gray-500 tracking-wide mb-3 font-light">Opciones</p>
       <nav>
         <ul class="space-y-3">
-          <li>
+          <li (click)="isSidebarOpen = false">
             <a
               routerLink="/payroll/dashboard"
               routerLinkActive="bg-blue-600 text-white"
@@ -21,7 +25,7 @@
               <span>Principal</span>
             </a>
           </li>
-          <li>
+          <li (click)="isSidebarOpen = false">
             <a
               routerLink="/payroll/boletas"
               routerLinkActive="bg-blue-600 text-white"
@@ -31,7 +35,7 @@
               <span>Boletas</span>
             </a>
           </li>
-          <li>
+          <li (click)="isSidebarOpen = false">
             <a
               routerLink="/payroll/perfil"
               routerLinkActive="bg-blue-600 text-white"
@@ -41,7 +45,7 @@
               <span>Perfil</span>
             </a>
           </li>
-           <li>
+          <li (click)="isSidebarOpen = false">
             <a
               routerLink="/payroll/cambio-contrasenia"
               routerLinkActive="bg-blue-600 text-white"
@@ -55,6 +59,13 @@
       </nav>
     </div>
   </aside>
+
+  <div
+    *ngIf="isSidebarOpen"
+    (click)="toggleSidebar()"
+    class="fixed inset-0 bg-black/50 z-40 md:hidden"
+  ></div>
+
   <div class="flex-1 flex flex-col overflow-hidden">
     <header class="bg-white border-b border-gray-200 flex items-center justify-between px-6 py-3">
       <button class="text-gray-600 focus:outline-none md:hidden" (click)="toggleSidebar()">
@@ -73,21 +84,24 @@
           />
         </svg>
       </button>
-      <h1 class="text-lg font-semibold text-gray-700">Panel Principal</h1>
-      <div class="flex items-center space-x-5">
+
+      <h1 class="text-lg font-semibold text-gray-700 md:ml-0 hidden sm:block">Panel Principal</h1>
+
+      <div class="flex items-center space-x-5 ml-auto">
         <div class="flex items-center gap-2 text-gray-700">
           <ng-icon name="heroUser" class="w-5 h-5 text-gray-600"></ng-icon>
-          <span class="font-medium">{{profile?.username}}</span>
+          <span class="font-medium">{{ profile?.username }}</span>
         </div>
         <button
           (click)="openConfirmLogout()"
           class="flex items-center gap-2 text-gray-600 hover:text-red-600 transition-colors duration-200 cursor-pointer"
         >
           <ng-icon name="heroArrowRightOnRectangle" class="w-5 h-5"></ng-icon>
-          <span>Cerrar sesión</span>
+          <span class="hidden sm:inline">Cerrar sesión</span>
         </button>
       </div>
     </header>
+
     <main class="flex-1 p-6 overflow-y-auto">
       <router-outlet></router-outlet>
     </main>

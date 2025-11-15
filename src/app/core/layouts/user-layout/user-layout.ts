@@ -23,13 +23,14 @@ export class UserLayout implements OnInit {
   sidebarOpen: boolean = true;
   confirmLogoutOpen: boolean = false;
   loadingLogout: boolean = false;
+  public isSidebarOpen: boolean = false;
 
   ngOnInit(): void {
     this.profile = this.SessionService.getCurrentUser();
   }
 
   toggleSidebar() {
-    this.sidebarOpen = !this.sidebarOpen;
+    this.isSidebarOpen = !this.isSidebarOpen;
   }
 
   openConfirmLogout() {
