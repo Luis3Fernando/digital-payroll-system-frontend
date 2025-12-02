@@ -1,10 +1,9 @@
-import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap, catchError, of, map, throwError } from 'rxjs';
 
 import { AuthRepository } from '@auth/repositories/auth.repository';
 import { LoginRequest, LogoutRequest } from '@auth/models/auth-request.model';
-import { isPlatformBrowser } from '@angular/common';
 import { APP_ROLES } from '@shared/utils/roles';
 import { ToastService } from '@shared/services/toast.service';
 import { SessionService } from './session.service';
@@ -17,9 +16,6 @@ export class AuthService {
   private router = inject(Router);
   private toastService = inject(ToastService);
   private sessionService = inject(SessionService);
-
-  private platformId = inject(PLATFORM_ID);
-  private isBrowser = isPlatformBrowser(this.platformId);
 
   public login(request: LoginRequest): Observable<boolean> {
     return this.authRepository.login(request).pipe(
@@ -119,7 +115,6 @@ export class AuthService {
     if (!refreshToken) {
       this.sessionService.clearSession();
       this.router.navigateByUrl('/auth/login');
-      this.toastService.show('success', 'Sesión Cerrada', 'Has cerrado tu sesión localmente.');
       return of(true);
     }
 
@@ -127,17 +122,11 @@ export class AuthService {
 
     return this.authRepository.logout(logoutRequest).pipe(
       tap((apiResponse) => {
-        this.toastService.processApiResponse(apiResponse, 'Cierre de Sesión');
         this.sessionService.clearSession();
         this.router.navigateByUrl('/auth/login');
       }),
       map(() => true),
       catchError((error) => {
-        this.toastService.show(
-          'warning',
-          'Conexión Fallida',
-          'Error al notificar al servidor. Sesión cerrada localmente.'
-        );
         this.sessionService.clearSession();
         this.router.navigateByUrl('/auth/login');
         return of(true);

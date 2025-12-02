@@ -127,14 +127,14 @@
   <section class="mt-8 mb-10">
     <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
       <ng-icon name="heroPresentationChartLine" size="28" class="text-indigo-600"></ng-icon>
-      Diagrama de Tendencia de Actividad (Usuarios)
+      Diagrama de tendencia de actividad (Usuarios)
     </h2>
     <div
       class="bg-white rounded-xl shadow p-6 border border-gray-100 transform hover:shadow-lg transition duration-300"
     >
       <div class="flex items-center justify-between mb-5 border-b pb-3">
         <h3 class="text-lg font-semibold text-gray-800">
-          Actividad por Hora del Día (00:00 - 23:00)
+          Actividad por hora del día (00:00 - 23:00)
         </h3>
       </div>
       <div class="relative h-96 w-full">
@@ -168,12 +168,12 @@
   <section class="mt-8 mb-10">
     <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
       <ng-icon name="heroShieldCheck" size="28" class="text-green-600"></ng-icon>
-      Auditoría y Compromiso del Sistema
+      Auditoría del sistema
     </h2>
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
       <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
         <div class="flex items-center justify-between mb-5 border-b pb-3">
-          <h3 class="text-lg font-semibold text-gray-800">Usuarios Más Activos (Top 5)</h3>
+          <h3 class="text-lg font-semibold text-gray-800">Usuarios más activos (Top 5)</h3>
           <ng-icon name="heroTrophy" size="24" class="text-yellow-600"></ng-icon>
         </div>
         <div *ngIf="dashboardData?.engagement?.top_users?.length; else noTopUsers">
