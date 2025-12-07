@@ -22,7 +22,6 @@ export class AuthService {
       tap((apiResponse) => {
         const responseData = apiResponse.data;
         if (responseData) {
-          console.log(responseData)
           this.sessionService.createSession(apiResponse.data);
 
           const redirectUrl =

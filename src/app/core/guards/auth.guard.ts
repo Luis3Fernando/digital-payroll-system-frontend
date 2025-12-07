@@ -1,24 +1,55 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { Router, CanActivateFn } from '@angular/router';
 import { SessionService } from '@domains/auth/services/session.service';
-import { ToastService } from '@shared/services/toast.service';
 
-export const authGuard: CanActivateFn = (route, state) => {
+export const authGuard: CanActivateFn = () => {
   const sessionService = inject(SessionService);
   const router = inject(Router);
-  const toastService = inject(ToastService);
 
   if (sessionService.getAccessToken()) {
-    // El usuario está autenticado (tiene token)
     return true;
-  } else {
-    // El usuario NO está autenticado
-    toastService.show(
-      'error',
-      'Acceso Denegado',
-      'Necesitas iniciar sesión para acceder a esta área.'
-    );
-    // Redirigir al login
-    return router.createUrlTree(['/auth/login']);
   }
+
+  router.navigate(['/auth/login']);
+  return false;
+};
+
+export const publicGuard: CanActivateFn = () => {
+  const sessionService = inject(SessionService);
+  const router = inject(Router);
+
+  if (sessionService.getAccessToken()) {
+    const user = sessionService.getCurrentUser();
+    
+    if (user?.role === 'admin') {
+      router.navigate(['/admin/dashboard']);
+    } else {
+      router.navigate(['/payroll/dashboard']);
+    }
+    return false;
+  }
+
+  return true;
+};
+
+export const roleGuard = (allowedRoles: string[]): CanActivateFn => {
+  return () => {
+    const sessionService = inject(SessionService);
+    const router = inject(Router);
+    const user = sessionService.getCurrentUser();
+
+    if (user && allowedRoles.includes(user.role)) {
+      return true;
+    }
+
+    if (user?.role === 'admin') {
+      router.navigate(['/admin/dashboard']);
+    } else if (user?.role === 'user') {
+      router.navigate(['/payroll/dashboard']);
+    } else {
+      router.navigate(['/auth/login']);
+    }
+    
+    return false;
+  };
 };
