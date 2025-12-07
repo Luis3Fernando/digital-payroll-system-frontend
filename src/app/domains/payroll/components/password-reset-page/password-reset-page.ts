@@ -11,6 +11,7 @@ import {
 } from '@angular/forms';
 import { ProfileUserService } from '@domains/payroll/services/profile-user.service';
 import { LoadingButton } from '@shared/components/loading-button/loading-button';
+import { finalize } from 'rxjs';
 
 export function MustMatch(controlName: string, matchingControlName: string): ValidatorFn {
   return (group: AbstractControl): { [key: string]: any } | null => {
@@ -75,17 +76,13 @@ export class PasswordResetPage implements OnInit {
     const { current_password, new_password } = this.changePasswordForm.value;
     const request = { current_password, new_password };
 
-    this.profileUserService.changePassword(request).subscribe({
-      next: () => {
-        this.changePasswordForm.reset();
-        this.isLoadingChange = false;
-      },
-      error: () => {
-        this.isLoadingChange = false;
-      },
-      complete: () => {
-        this.isLoadingChange = false;
-      },
-    });
+    this.profileUserService
+      .changePassword(request)
+      .pipe(finalize(() => (this.isLoadingChange = false)))
+      .subscribe({
+        next: () => {
+          this.changePasswordForm.reset();
+        },
+      });
   }
 }

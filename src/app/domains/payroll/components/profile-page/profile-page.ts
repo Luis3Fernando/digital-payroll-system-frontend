@@ -73,6 +73,7 @@ export class ProfilePage implements OnInit {
         this.closeUpdateEmailModal();
       },
       error: (err) => {
+        this.loadingUpdateEmail = false;
       },
       complete: () => {
         this.loadingUpdateEmail = false;
@@ -89,6 +90,7 @@ export class ProfilePage implements OnInit {
       },
       error: () => {
         this.userProfile = null;
+        this.isLoadingProfile = false;
       },
       complete: () => {
         this.isLoadingProfile = false;
