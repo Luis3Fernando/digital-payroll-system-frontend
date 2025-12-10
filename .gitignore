@@ -6,6 +6,11 @@
 /out-tsc
 /bazel-out
 
+# Compressed
+*.7z
+*.gz
+*.rar   
+
 # Node
 /node_modules
 npm-debug.log
